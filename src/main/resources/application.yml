@@ -1,4 +1,14 @@
-
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health
+      health:
+        show-details: always
 springdoc:
   swagger-ui:
     path: /swagger-ui
