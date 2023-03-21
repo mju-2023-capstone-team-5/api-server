@@ -26,5 +26,6 @@ jobs:
             git pull origin develop
             chmod +x ./gradlew
             ./gradlew clean && ./gradlew build
-            bash /root/app/kill.sh
-            bash /root/app/run.sh
+            cd /root/app
+            bash ./kill.sh
+            bash ./run.sh
