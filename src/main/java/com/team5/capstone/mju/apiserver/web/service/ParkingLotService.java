@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
 
+    // Repository 객체
     private final ParkingLotRepository parkingLotRepository;
 
-    @Autowired
+    @Autowired // 생성자를 통한 의존성 주입
     public ParkingLotService(ParkingLotRepository parkingLotRepository) {
         this.parkingLotRepository = parkingLotRepository;
     }
