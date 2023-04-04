@@ -1,9 +1,11 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,8 +20,16 @@ public class ParkingLotService {
         this.parkingLotRepository = parkingLotRepository;
     }
 
-    public ParkingLot getParkingLotInfo(Long id) {
+    @Transactional
+    public ParkingLotResponseDto getParkingLotInfo(Long id) {
         Optional<ParkingLot> result = parkingLotRepository.findById(id);
-        return result.orElseThrow(() -> new IllegalStateException("잘못된 아이디"));
+        ParkingLot parkingLot = result.get();
+
+        ParkingLotResponseDto dto = ParkingLotResponseDto.builder()
+                .address(parkingLot.getAddress())
+                .name(parkingLot.getName())
+                .build();
+
+        return dto;
     }
 }
