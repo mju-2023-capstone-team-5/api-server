@@ -1,6 +1,9 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
-import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthorizationCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthenticationResponseVo;
+import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthorizationParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,11 +16,16 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Service
 public class RegisterService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -25,7 +33,7 @@ public class RegisterService {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
 
-    public String getOauth2Token(KakaoProviderAuthorizationCode kakaoCode) {
+    public KakaoProviderAuthenticationResponseVo getOauth2Token(KakaoProviderAuthorizationParamVo kakaoCode) {
         OAuth2AccessToken accessToken;
 
         HttpHeaders headers = new HttpHeaders();
@@ -37,6 +45,16 @@ public class RegisterService {
         map.add("code", kakaoCode.getCode());
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.postForEntity("https://kauth.kakao.com/oauth/token", request, String.class);
-        return response.getBody();
+
+        String responseJson = response.getBody();
+
+        Optional<KakaoProviderAuthenticationResponseVo> authenticationResponseVo;
+        try {
+            authenticationResponseVo = Optional.ofNullable(objectMapper.readValue(responseJson, KakaoProviderAuthenticationResponseVo.class));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return authenticationResponseVo.orElseThrow(() -> new IllegalStateException("인증 정보가 올바르지 않습니다."));
     }
 }

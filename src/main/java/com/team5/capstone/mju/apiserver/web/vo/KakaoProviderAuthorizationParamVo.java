@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KakaoProviderAuthorizationCode {
+public class KakaoProviderAuthorizationParamVo {
     private String code;
 }
