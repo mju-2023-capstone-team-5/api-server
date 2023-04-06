@@ -25,16 +25,17 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.9'
+// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.9'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	implementation 'mysql:mysql-connector-java:8.0.32'
 
-
-
-
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
