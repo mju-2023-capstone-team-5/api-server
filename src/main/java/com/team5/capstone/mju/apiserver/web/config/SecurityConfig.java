@@ -16,7 +16,8 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll()
-                .and();
+                .and()
+                .oauth2Login();
         return http.build();
     }
 
