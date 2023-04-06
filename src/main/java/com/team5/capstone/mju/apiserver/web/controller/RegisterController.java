@@ -25,7 +25,9 @@ public class RegisterController {
     public ResponseEntity<String> authorization(@PathParam("code") KakaoProviderAuthorizationCode kakaoProviderAuthorizationCode) {
         LoggerFactory.getLogger(this.getClass())
                 .info("code: " + kakaoProviderAuthorizationCode.getCode());
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(registerService.getOauth2Token(kakaoProviderAuthorizationCode));
+//        return ResponseEntity.ok("success");
     }
+
 
 }
