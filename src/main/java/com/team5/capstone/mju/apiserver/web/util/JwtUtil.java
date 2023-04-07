@@ -56,4 +56,12 @@ public class JwtUtil {
         }
         return true;
     }
+
+    public Long loadUser(String jwt) {
+        Jws<Claims> claims = Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(jwt);
+        return Long.valueOf(claims.getBody().getSubject());
+    }
 }
