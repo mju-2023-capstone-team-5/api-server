@@ -2,6 +2,9 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team5.capstone.mju.apiserver.web.dto.OAuth2ResponseDto;
+import com.team5.capstone.mju.apiserver.web.util.JwtUtil;
+import com.team5.capstone.mju.apiserver.web.vo.JwtPayloadParam;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthenticationResponseVo;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthorizationParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +30,16 @@ public class RegisterService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
 
-    public KakaoProviderAuthenticationResponseVo getOauth2Token(KakaoProviderAuthorizationParamVo kakaoCode) {
+    public OAuth2ResponseDto getOauth2Token(KakaoProviderAuthorizationParamVo kakaoCode) {
         OAuth2AccessToken accessToken;
 
         HttpHeaders headers = new HttpHeaders();
@@ -55,6 +61,11 @@ public class RegisterService {
             throw new RuntimeException(e);
         }
 
-        return authenticationResponseVo.orElseThrow(() -> new IllegalStateException("인증 정보가 올바르지 않습니다."));
+        OAuth2ResponseDto responseDto = OAuth2ResponseDto.builder()
+                .jwt(jwtUtil.createJwt(new JwtPayloadParam(1)))
+                .isNewUser(true)
+                .build();
+
+        return responseDto;
     }
 }

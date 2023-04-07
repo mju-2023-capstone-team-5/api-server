@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.team5.capstone.mju.apiserver.web.dto.OAuth2ResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.RegisterService;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthenticationResponseVo;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthorizationParamVo;
@@ -21,7 +22,7 @@ public class RegisterController {
     }
 
     @GetMapping("/oauth2/kakao")
-    public ResponseEntity<KakaoProviderAuthenticationResponseVo> authorization(@PathParam("code") KakaoProviderAuthorizationParamVo kakaoProviderAuthorizationCode) {
+    public ResponseEntity<OAuth2ResponseDto> authorization(@PathParam("code") KakaoProviderAuthorizationParamVo kakaoProviderAuthorizationCode) {
         return ResponseEntity.ok(registerService.getOauth2Token(kakaoProviderAuthorizationCode));
 //        return ResponseEntity.ok("success");
     }
