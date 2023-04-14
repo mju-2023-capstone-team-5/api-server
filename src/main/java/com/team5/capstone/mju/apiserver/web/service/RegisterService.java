@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Slf4j
@@ -95,11 +96,14 @@ public class RegisterService {
             JsonNode root = objectMapper.readTree(responseEntity.getBody());
             Long kakaoAppId = root.get("id").asLong();
             String email = root.get("kakao_account").get("email").asText();
+            String connectedAt = root.get("connected_at").asText();
+            LocalDateTime dateJoined = LocalDateTime.parse(connectedAt, DateTimeFormatter.ISO_DATE_TIME);
 
             AddNewUserFromRegisterRequestDto addNewUserFromRegisterDto = AddNewUserFromRegisterRequestDto.builder()
                     .kakaoAppId(kakaoAppId)
                     .email(email)
                     .socialLoginRefreshToken(authenticationResponseVo.getRefreshToken())
+                    .dateJoined(dateJoined)
                     .build();
 
             return addNewUserFromRegisterDto;
@@ -116,7 +120,7 @@ public class RegisterService {
                         .email(addNewUserFromRegisterDto.getEmail())
                         .kakaoAppId(addNewUserFromRegisterDto.getKakaoAppId())
                         .socialLoginRefreshToken(addNewUserFromRegisterDto.getSocialLoginRefreshToken())
-                        .dateJoined(LocalDateTime.now())
+                        .dateJoined(addNewUserFromRegisterDto.getDateJoined())
                         .phone("")
                         .address("")
                         .carNumber("")
