@@ -1,14 +1,14 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.team5.capstone.mju.apiserver.web.dto.AddInfoRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.AddNewUserFromRegisterRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.OAuth2ResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.RegisterService;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthenticationResponseVo;
 import com.team5.capstone.mju.apiserver.web.vo.KakaoProviderAuthorizationParamVo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 
@@ -23,9 +23,17 @@ public class RegisterController {
 
     @GetMapping("/oauth2/kakao")
     public ResponseEntity<OAuth2ResponseDto> authorization(@PathParam("code") KakaoProviderAuthorizationParamVo kakaoProviderAuthorizationCode) {
-        return ResponseEntity.ok(registerService.getOauth2Token(kakaoProviderAuthorizationCode));
-//        return ResponseEntity.ok("success");
-    }
+        KakaoProviderAuthenticationResponseVo oauth2Token = registerService.getOauth2Token(kakaoProviderAuthorizationCode);
+        AddNewUserFromRegisterRequestDto addNewUserRequestDto = registerService.getKakaoMemberProfileInfo(oauth2Token);
 
+        OAuth2ResponseDto oAuth2ResponseDto = registerService.getJWTToken(addNewUserRequestDto);
+
+        return ResponseEntity.ok(oAuth2ResponseDto);
+        }
+
+    @PostMapping(value = "/api/v1/add-info", produces = "application/json")
+    public ResponseEntity<String> addNewUserInfo(@RequestBody AddInfoRequestDto requestDto) {
+        return ResponseEntity.ok(registerService.addNewInfo(requestDto));
+    }
 
 }
