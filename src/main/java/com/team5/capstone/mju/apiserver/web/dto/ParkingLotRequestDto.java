@@ -6,13 +6,14 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotResponseDto {
-    private int parkingLotId;
+public class ParkingLotRequestDto {
+
     private String name;
     private String address;
     private BigDecimal latitude;
@@ -26,7 +27,6 @@ public class ParkingLotResponseDto {
     public ParkingLot ToEntity(){
 
         ParkingLot parkingLot = new ParkingLot();
-        parkingLot.setParkingLotId((long) parkingLotId);
         parkingLot.setName(name);
         parkingLot.setAddress(address);
         parkingLot.setLatitude(latitude);
@@ -39,5 +39,4 @@ public class ParkingLotResponseDto {
 
         return parkingLot;
     }
-
 }

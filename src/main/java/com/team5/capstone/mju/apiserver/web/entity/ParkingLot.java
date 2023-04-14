@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -36,10 +37,10 @@ public class ParkingLot {
     private BigDecimal longitude;
 
     @Column(name = "total_space", columnDefinition = "int")
-    private Integer totalSpace;
+    private int totalSpace;
 
     @Column(name = "remaining_space")
-    private Integer remainingSpace;
+    private int remainingSpace;
 
     @Column(name = "open_time")
     private LocalDateTime openTime;
