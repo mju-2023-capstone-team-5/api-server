@@ -37,10 +37,10 @@ public class ParkingLot {
     private BigDecimal longitude;
 
     @Column(name = "total_space", columnDefinition = "int")
-    private int totalSpace;
+    private Integer totalSpace;
 
     @Column(name = "remaining_space")
-    private int remainingSpace;
+    private Integer remainingSpace;
 
     @Column(name = "open_time")
     private LocalDateTime openTime;
