@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -10,6 +10,7 @@ spring:
     username: ${DATABASE_USERNAME} # 데이터베이스 사용자 id
     password: ${DATABASE_PASSWORD} # 데이터베이스 사용자 비번
     driver-class-name: com.mysql.cj.jdbc.Driver # 드라이버 이름
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect # mysql 버전을 따라가는 Hibernate 구현체 문법 설정
     hibernate:

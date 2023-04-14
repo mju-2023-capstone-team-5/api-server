@@ -1,15 +1,18 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+@Slf4j
 @RestController  // 컨트롤러 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Controller 클래스는 스프링이 Bean으로 관리
 // RESTController ==> @Controller + @RestponseBody를 묶은 것으로,
 // 이 컨트롤러 내에서 반환하는 값은 기본적으로 String 또는 json 구조의 String ==> 이 클래스 내에서는 RESTful한 API만 개발하겠다는 뜻
@@ -31,4 +34,23 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getParkingLotInfo(id));
     }
 
+    @PostMapping("/parking-lots")
+    public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotRequestDto requestDto) {
+        log.info(requestDto.toString());
+        ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/parking-lots/{id}")
+    public ResponseEntity<ParkingLotResponseDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotRequestDto requestDto) {
+        log.info(requestDto.toString());
+        ParkingLotResponseDto responseDto = parkingLotService.updateParkingLot(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/parking-lots/{id}")
+    public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
+        parkingLotService.deleteParkingLot(id);
+        return ResponseEntity.noContent().build();
+    }
 }
