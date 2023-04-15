@@ -17,6 +17,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class LoginService {
@@ -60,14 +62,48 @@ public class LoginService {
         return false;
     }
 
-    public boolean createOrFound() {
+    public Optional<JsonNode> getMyInfo(LoginRequestDto loginRequestDto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + loginRequestDto.getAccessToken());
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.GET,
+                httpEntity,
+                String.class
+        );
+
+        JsonNode node = null;
+
+        try {
+            node = objectMapper.readTree(responseEntity.getBody());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(node);
+    }
+
+    public boolean createOrFound(Long kakaoAppUserId, String email) {
+
         return true;
     }
 
     public LoginResponseDto tryLogin(LoginRequestDto loginRequestDto) {
+        if (!isValidateToken(loginRequestDto)) throw new RuntimeException();
+        Optional<JsonNode> myInfo = getMyInfo(loginRequestDto);
 
-        boolean isValidate = isValidateToken(loginRequestDto);
-        log.info("validate: " + isValidate);
+        if (myInfo.isPresent()) {
+            JsonNode node = myInfo.get();
+
+            Long kakaoAppUserId = node.get("id").asLong();
+            String email = node.get("kakao_account").get("email").asText();
+
+            log.info("id: " + kakaoAppUserId + ", email: " + email);
+
+        }
 
         return LoginResponseDto.builder()
                 .jwt(null)
