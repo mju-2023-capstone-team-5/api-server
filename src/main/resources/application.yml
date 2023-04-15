@@ -41,3 +41,4 @@ springdoc:
 
 extends:
   app-id: ${KAKAO_DEVELOPERS_APP_ID}
+  jwt-secret: ${JWT_SECRET_KEY}
