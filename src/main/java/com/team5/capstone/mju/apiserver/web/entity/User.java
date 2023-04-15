@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.RegisterRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,5 +43,10 @@ public class User {
     @Column(name = "date_joined")
     private LocalDateTime dateJoined;
 
-
+    public void addExtraInfoSelf(RegisterRequestDto registerRequestDto) {
+        this.name = registerRequestDto.getName();
+        this.address = registerRequestDto.getAddress();
+        this.carNumber = registerRequestDto.getCarNumber();
+        this.phone = registerRequestDto.getPhone();
+    }
 }
