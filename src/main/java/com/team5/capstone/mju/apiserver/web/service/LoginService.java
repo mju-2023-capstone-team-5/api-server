@@ -8,6 +8,7 @@ import com.team5.capstone.mju.apiserver.web.dto.LoginRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.LoginResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
+import com.team5.capstone.mju.apiserver.web.util.JwtUtil;
 import com.team5.capstone.mju.apiserver.web.vo.NewOrFoundUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class LoginService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private final UserRepository userRepository;
 
@@ -120,8 +124,10 @@ public class LoginService {
             LocalDateTime dateJoined = LocalDateTime.parse(connectedAt, DateTimeFormatter.ISO_DATE_TIME);
 
             NewOrFoundUser newOrFoundUser = createOrFound(kakaoAppUserId, email, dateJoined);
+
+            LocalDateTime expiredAt = dateJoined.plusYears(1);
             return LoginResponseDto.builder()
-                    .jwt(null)
+                    .jwt(jwtUtil.createJwt(newOrFoundUser.getUserId(), expiredAt))
                     .userId(newOrFoundUser.getUserId())
                     .isNewUser(newOrFoundUser.isNewUser())
                     .build();
