@@ -28,8 +28,8 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "social_login_type")
-    private String socialLoginType;
+    @Column(name = "kakao_app_uuid")
+    private String kakaoAppUuid; // 앱별 연결된 사용자에게 부여 된 id
 
     @Column(name = "social_login_token")
     private String socialLoginToken;
