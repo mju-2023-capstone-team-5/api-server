@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team5.capstone.mju.apiserver.web.dto.LoginRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.LoginResponseDto;
+import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
+import com.team5.capstone.mju.apiserver.web.vo.NewOrFoundUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Slf4j
@@ -86,9 +90,20 @@ public class LoginService {
         return Optional.ofNullable(node);
     }
 
-    public boolean createOrFound(String kakaoAppUserId, String email) {
-        userRepository.findByKakaoAppUuid(kakaoAppUserId);
-        return true;
+    public NewOrFoundUser createOrFound(String kakaoAppUserId, String email, LocalDateTime dateJoined) { // 생성되면 true, 기존에 유저가 존재하면 false
+        Optional<User> found = userRepository.findByKakaoAppUuid(kakaoAppUserId);
+
+        if (found.isPresent()) return new NewOrFoundUser(found.get().getUserid(), false);
+        User newUser = User.builder()
+                .Userid(null)
+                .name("").phone("").address("").carNumber("").socialLoginToken("")
+                .email(email)
+                .kakaoAppUuid(kakaoAppUserId)
+                .dateJoined(dateJoined)
+                .build();
+
+        User savedUser = userRepository.save(newUser);
+        return new NewOrFoundUser(savedUser.getUserid(), true);
     }
 
     public LoginResponseDto tryLogin(LoginRequestDto loginRequestDto) {
@@ -100,15 +115,17 @@ public class LoginService {
 
             String kakaoAppUserId = node.get("id").asText();
             String email = node.get("kakao_account").get("email").asText();
+            String connectedAt = node.get("connected_at").asText();
 
-            log.info("id: " + kakaoAppUserId + ", email: " + email);
+            LocalDateTime dateJoined = LocalDateTime.parse(connectedAt, DateTimeFormatter.ISO_DATE_TIME);
 
+            NewOrFoundUser newOrFoundUser = createOrFound(kakaoAppUserId, email, dateJoined);
+            return LoginResponseDto.builder()
+                    .jwt(null)
+                    .userId(newOrFoundUser.getUserId())
+                    .isNewUser(newOrFoundUser.isNewUser())
+                    .build();
         }
-
-        return LoginResponseDto.builder()
-                .jwt(null)
-                .userId(null)
-                .isNewUser(true)
-                .build();
+        throw new RuntimeException();
     }
 }
