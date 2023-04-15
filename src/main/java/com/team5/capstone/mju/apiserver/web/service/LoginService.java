@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -94,6 +95,7 @@ public class LoginService {
         return Optional.ofNullable(node);
     }
 
+    @Transactional
     public NewOrFoundUser createOrFound(String kakaoAppUserId, String email, LocalDateTime dateJoined) { // 생성되면 true, 기존에 유저가 존재하면 false
         Optional<User> found = userRepository.findByKakaoAppUuid(kakaoAppUserId);
 
