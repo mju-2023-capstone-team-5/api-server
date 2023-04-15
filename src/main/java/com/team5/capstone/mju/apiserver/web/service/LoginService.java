@@ -86,8 +86,8 @@ public class LoginService {
         return Optional.ofNullable(node);
     }
 
-    public boolean createOrFound(Long kakaoAppUserId, String email) {
-
+    public boolean createOrFound(String kakaoAppUserId, String email) {
+        userRepository.findByKakaoAppUuid(kakaoAppUserId);
         return true;
     }
 
@@ -98,7 +98,7 @@ public class LoginService {
         if (myInfo.isPresent()) {
             JsonNode node = myInfo.get();
 
-            Long kakaoAppUserId = node.get("id").asLong();
+            String kakaoAppUserId = node.get("id").asText();
             String email = node.get("kakao_account").get("email").asText();
 
             log.info("id: " + kakaoAppUserId + ", email: " + email);
