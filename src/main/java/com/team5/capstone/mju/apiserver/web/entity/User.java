@@ -1,13 +1,16 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.team5.capstone.mju.apiserver.web.dto.RegisterRequestDto;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User {
@@ -28,8 +31,8 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "social_login_type")
-    private String socialLoginType;
+    @Column(name = "kakao_app_uuid")
+    private String kakaoAppUuid; // 앱별 연결된 사용자에게 부여 된 id
 
     @Column(name = "social_login_token")
     private String socialLoginToken;
@@ -40,5 +43,10 @@ public class User {
     @Column(name = "date_joined")
     private LocalDateTime dateJoined;
 
-
+    public void addExtraInfoSelf(RegisterRequestDto registerRequestDto) {
+        this.name = registerRequestDto.getName();
+        this.address = registerRequestDto.getAddress();
+        this.carNumber = registerRequestDto.getCarNumber();
+        this.phone = registerRequestDto.getPhone();
+    }
 }

@@ -40,6 +40,7 @@ public class ParkingLotService {
     }
 
     // 주차장 생성
+    @Transactional
     public ParkingLotResponseDto createParkingLot(ParkingLotRequestDto requestDto) {
 
         // ParkingLot 엔티티를 데이터베이스에 저장
@@ -62,6 +63,7 @@ public class ParkingLotService {
     }
 
     // 주차장 업데이트
+    @Transactional
     public ParkingLotResponseDto updateParkingLot(Long id, ParkingLotRequestDto requestDto) {
         ParkingLot parkingLot = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
@@ -100,6 +102,7 @@ public class ParkingLotService {
     }
 
 
+    @Transactional
     public void deleteParkingLot(Long id) {
         parkingLotRepository.deleteById(id);
     }
