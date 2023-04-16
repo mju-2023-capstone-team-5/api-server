@@ -43,6 +43,7 @@ public class HistoryService {
     }
 
     // 이용내역 생성
+    @Transactional
     public HistoryResponseDto createHistory(HistoryRequestDto requestDto) {
 
         // History 엔티티를 데이터베이스에 저장
@@ -61,6 +62,7 @@ public class HistoryService {
     }
 
     //이용내역 삭제
+    @Transactional
     public void deleteHistory(Long id) {
         historyRepository.deleteById(id);
     }
