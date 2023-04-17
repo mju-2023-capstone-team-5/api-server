@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
         @Server(url = "https://mju-2023capstone-team5.run.goorm.site")
 })
 public class ServerSpringConfig {
-    @Bean
+    @Bean(name = "serverRestTemplate")
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
