@@ -18,6 +18,11 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+  servlet: # multipartFile 용량 늘려주는 설정
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
 management: # spring-boot-actuator 설정
   endpoint:
     web:
@@ -44,3 +49,15 @@ springdoc:
 extends:
   app-id: ${KAKAO_DEVELOPERS_APP_ID}
   jwt-secret: ${JWT_SECRET_KEY}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AMAZON_ACCESS_KEY}
+      secret-key: ${AMAZON_SECRET_KEY}
+    s3:
+      bucket: ${AMAZON_S3_BUCKET}
+    region:
+      static: ${AMAZON_REGION}
+    stack:
+      auto: false
