@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
 
 @Service
 public class AmazonS3Service {
@@ -25,11 +24,11 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImageOriginalFileName(String prefixPath, MultipartFile multipartFile) {
-        return uploadImage(prefixPath, multipartFile.getOriginalFilename(), multipartFile);
+    public String uploadImage(String prefixPath, MultipartFile multipartFile) {
+        return uploadImageWithFileName(prefixPath, multipartFile.getOriginalFilename(), multipartFile);
     }
 
-    public String uploadImage(String prefixPath, String specifiedFileName, MultipartFile multipartFile) {
+    public String uploadImageWithFileName(String prefixPath, String specifiedFileName, MultipartFile multipartFile) {
         byte[] bytes = new byte[0];
         try {
             bytes = IOUtils.toByteArray(multipartFile.getInputStream());
