@@ -2,21 +2,18 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
+import com.team5.capstone.mju.apiserver.web.service.AmazonS3Service;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,10 +28,12 @@ public class ParkingLotController {
 
     //서비스 객체
     private final ParkingLotService parkingLotService;
+    private final AmazonS3Service amazonS3Service;
 
     @Autowired // 생성자를 통한 의존성 주입
-    public ParkingLotController(ParkingLotService parkingLotService) {
+    public ParkingLotController(ParkingLotService parkingLotService, AmazonS3Service amazonS3Service) {
         this.parkingLotService = parkingLotService;
+        this.amazonS3Service = amazonS3Service;
     }
 
     @GetMapping("/parking-lots/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
@@ -50,20 +49,16 @@ public class ParkingLotController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping(value = "/parking-lots/{id}/upload/images", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> uploadParkingLotImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
-        try {
-            String fileName = StringUtils.cleanPath(files[0].getOriginalFilename());
-            String uploadDir = "/Users/jaehan1346/Desktop/"; // 저장할 경로, 바로 아랫줄에서 fileName 앞에 /가 안 붙으므로 경로 마지막에 /를 붙였음
-            Path path = Paths.get(uploadDir + fileName);
-            Files.createDirectories(path.getParent());
-            File dest = path.toFile();
-            files[0].transferTo(dest);
-            return ResponseEntity.ok("File uploaded successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    // 주차장 정보 사진 업로드 url
+    @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok(amazonS3Service.uploadImage("image/png", "parking-lots/" + id + "/", "info.png", file));
+    }
+
+    // 주차장 허가 문서 업로드 url
+    @PostMapping(value = "/parking-lots/{id}/images/permit-request")
+    public ResponseEntity<String> uplodaParkingLotPermitRequestImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
+        return ResponseEntity.ok("success");
     }
 
     @PatchMapping("/parking-lots/{id}")
