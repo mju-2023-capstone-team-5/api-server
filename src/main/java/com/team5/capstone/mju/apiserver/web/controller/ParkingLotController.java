@@ -6,18 +6,9 @@ import com.team5.capstone.mju.apiserver.web.service.AmazonS3Service;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Slf4j
 @RestController  // 컨트롤러 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Controller 클래스는 스프링이 Bean으로 관리
@@ -54,10 +45,7 @@ public class ParkingLotController {
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
         ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
-
-        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-
-        return ResponseEntity.ok(amazonS3Service.uploadImage("parking-lots/" + id + "/", "info.png", file));
+        return ResponseEntity.ok(amazonS3Service.uploadImageWithFileName("parking-lots/" + id + "/", "info.png", file));
     }
 
     // 주차장 허가 문서 업로드 url
