@@ -24,7 +24,7 @@ public class ParkingLotRequestDto {
     private LocalDateTime openTime;
     private String freeInformation;
 
-    public ParkingLot ToEntity(){
+    public ParkingLot toEntity() {
 
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName(name);

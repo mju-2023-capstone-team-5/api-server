@@ -6,7 +6,7 @@ import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class RegisterService {
@@ -18,12 +18,9 @@ public class RegisterService {
 
     @Transactional
     public void registerNewUser(RegisterRequestDto registerRequestDto) {
-        Optional<User> found = userRepository.findById(registerRequestDto.getUserId());
+        User found = userRepository.findById(registerRequestDto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User를 찾을 수 없습니다"));
 
-        if (found.isEmpty()) throw new RuntimeException();
-
-        User user = found.get();
-        user.addExtraInfoSelf(registerRequestDto); // User 객체 스스로 추가 정보 삽입
-        return;
+        found.addExtraInfoSelf(registerRequestDto); // User 객체 스스로 추가 정보 삽입
     }
 }

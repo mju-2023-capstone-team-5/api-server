@@ -19,7 +19,7 @@ import java.io.IOException;
 public class AmazonS3Service {
 
     @Autowired
-    private AmazonS3 s3;
+    private AmazonS3 s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -45,7 +45,7 @@ public class AmazonS3Service {
         }
         metadata.setContentLength(bytes.length);
 
-        s3.putObject(new PutObjectRequest(bucket, uploadPathFile, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        return s3.getUrl(bucket, uploadPathFile).toString();
+        s3Client.putObject(new PutObjectRequest(bucket, uploadPathFile, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        return s3Client.getUrl(bucket, uploadPathFile).toString();
     }
 }

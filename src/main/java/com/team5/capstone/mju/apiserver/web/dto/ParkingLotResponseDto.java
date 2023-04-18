@@ -24,7 +24,7 @@ public class ParkingLotResponseDto {
     private String freeInformation;
     private String imageUrl;
 
-    public ParkingLot ToEntity(){
+    public ParkingLot ToEntity() {
 
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setParkingLotId((long) parkingLotId);
@@ -41,4 +41,19 @@ public class ParkingLotResponseDto {
         return parkingLot;
     }
 
+    public static ParkingLotResponseDto of(ParkingLot parkingLot) {
+        return ParkingLotResponseDto.builder()
+                .parkingLotId(Math.toIntExact(parkingLot.getParkingLotId()))
+                .name(parkingLot.getName())
+                .address(parkingLot.getAddress())
+                .latitude(parkingLot.getLatitude())
+                .longitude(parkingLot.getLongitude())
+                .totalSpace(parkingLot.getTotalSpace())
+                .remainingSpace(parkingLot.getRemainingSpace())
+                .openTime(parkingLot.getOpenTime())
+                .status(parkingLot.getStatus())
+                .freeInformation(parkingLot.getFreeInformation())
+                .imageUrl(parkingLot.getImageUrl())
+                .build();
+    }
 }

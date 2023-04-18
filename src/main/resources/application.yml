@@ -1,3 +1,57 @@
 spring:
   profiles:
     active: ${PROFILE}
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect # mysql 버전을 따라가는 Hibernate 구현체 문법 설정
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  servlet: # multipartFile 용량 늘려주는 설정
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # 드라이버 이름
+
+management: # spring-boot-actuator 설정
+  endpoint:
+    web:
+      exposure:
+        include: health # health endpoint 추가
+    health:
+      show-details: always # health 자세한 정보 추가
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+    groups-order: ASC
+    operationsSorter: controller
+    disable-swagger-default-url: true
+    display-request-duration: true
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/v1/**
+    - /actuator/*
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AMAZON_ACCESS_KEY}
+      secret-key: ${AMAZON_SECRET_KEY}
+    s3:
+      bucket: ${AMAZON_S3_BUCKET}
+    region:
+      static: ${AMAZON_REGION}
+    stack:
+      auto: false
+
+extends:
+  app-id: ${KAKAO_DEVELOPERS_APP_ID}
+  jwt-secret: ${JWT_SECRET_KEY}

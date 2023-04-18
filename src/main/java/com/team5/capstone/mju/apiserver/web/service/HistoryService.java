@@ -2,17 +2,13 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.HistoryRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.HistoryResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.History;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class HistoryService {
@@ -27,16 +23,16 @@ public class HistoryService {
 
     @Transactional
     public HistoryResponseDto getHistoryInfo(Long id) {
-        Optional<History> result = historyRepository.findById(id);
-        History history = result.get();
+        History found = historyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("예약 내역을 찾을 수 없습니다."));
 
         HistoryResponseDto dto = HistoryResponseDto.builder()
-                .historyId(Math.toIntExact(history.getHistoryId()))
-                .userId(history.getUserId())
-                .parkingLotId(history.getParkingLotId())
-                .startTime(history.getStartTime())
-                .endTime(history.getEndTime())
-                .dateUsed(history.getDateUsed())
+                .historyId(Math.toIntExact(found.getHistoryId()))
+                .userId(found.getUserId())
+                .parkingLotId(found.getParkingLotId())
+                .startTime(found.getStartTime())
+                .endTime(found.getEndTime())
+                .dateUsed(found.getDateUsed())
                 .build();
 
         return dto;

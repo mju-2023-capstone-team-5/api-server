@@ -4,6 +4,11 @@ import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.AmazonS3Service;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 // RESTController ==> @Controller + @RestponseBody를 묶은 것으로,
 // 이 컨트롤러 내에서 반환하는 값은 기본적으로 String 또는 json 구조의 String ==> 이 클래스 내에서는 RESTful한 API만 개발하겠다는 뜻
 @RequestMapping("/api/v1") // API 요청 URL의 앞에 오는 Prefix 설정
+@Tag(name = "주차장 Controller", description = "주차장 관련 API 요청 Controller")
 // 현재까지의 API 요청 url: localhost:8080 + /api/v1
 public class ParkingLotController {
 
@@ -28,12 +34,22 @@ public class ParkingLotController {
         this.amazonS3Service = amazonS3Service;
     }
 
+    @Operation(summary = "주차장 정보 반환 API", description = "주차장의 아이디를 받아 정보를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공")
+            }
+    )
     @GetMapping("/parking-lots/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
     public ResponseEntity<ParkingLotResponseDto> getParkingLot(@PathVariable("id") Long id) { // url path에 있는 {id}와 변수를 매핑
         // 서비스를 호출하여 얻어온 결과값을 반환. 반환 시 json 구조의 String으로 스프링이 해석하여 API 요청에 반환해줌
         return ResponseEntity.ok(parkingLotService.getParkingLotInfo(id));
     }
 
+    @Operation(summary = "주차장 정보 생성 API", description = "주차장의 정보를 받아 새로운 주차장을 생성하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "새로운 주차장 생성에 성공")
+            }
+    )
     @PostMapping("/parking-lots")
     public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotRequestDto requestDto) {
         log.info(requestDto.toString());
@@ -42,6 +58,11 @@ public class ParkingLotController {
     }
 
     // 주차장 정보 사진 업로드 url
+    @Operation(summary = "주차장 정보 사진 업로드 API", description = "주차장의 사진을 받아 서버에 업로드하고 주차장 정보를 업데이트 하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장의 사진 업로드 및 url 업데이트에 성공")
+            }
+    )
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
         ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
@@ -51,11 +72,21 @@ public class ParkingLotController {
     }
 
     // 주차장 허가 문서 업로드 url
+    @Operation(summary = "주차장 허가 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공")
+            }
+    )
     @PostMapping(value = "/parking-lots/{id}/images/permit-request", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotPermitRequestImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok("upload success");
     }
 
+    @Operation(summary = "주차장 정보 업데이트 API", description = "주차장의 정보를 받아 정보를 업데이트 하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 업데이트에 성공")
+            }
+    )
     @PatchMapping("/parking-lots/{id}")
     public ResponseEntity<ParkingLotResponseDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotRequestDto requestDto) {
         log.info(requestDto.toString());
@@ -63,6 +94,11 @@ public class ParkingLotController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Operation(summary = "주차장 정보 삭제 API", description = "주차장의 아이디를 받아 주차장을 삭제하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 삭제에 성공")
+            }
+    )
     @DeleteMapping("/parking-lots/{id}")
     public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
         parkingLotService.deleteParkingLot(id);
