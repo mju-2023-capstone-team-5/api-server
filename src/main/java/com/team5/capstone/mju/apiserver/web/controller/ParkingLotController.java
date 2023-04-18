@@ -6,12 +6,21 @@ import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Slf4j
 @RestController  // 컨트롤러 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Controller 클래스는 스프링이 Bean으로 관리
 // RESTController ==> @Controller + @RestponseBody를 묶은 것으로,
@@ -39,6 +48,22 @@ public class ParkingLotController {
         log.info(requestDto.toString());
         ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping(value = "/parking-lots/{id}/upload/images", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> uploadParkingLotImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
+        try {
+            String fileName = StringUtils.cleanPath(files[0].getOriginalFilename());
+            String uploadDir = "/Users/jaehan1346/Desktop/"; // 저장할 경로, 바로 아랫줄에서 fileName 앞에 /가 안 붙으므로 경로 마지막에 /를 붙였음
+            Path path = Paths.get(uploadDir + fileName);
+            Files.createDirectories(path.getParent());
+            File dest = path.toFile();
+            files[0].transferTo(dest);
+            return ResponseEntity.ok("File uploaded successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PatchMapping("/parking-lots/{id}")
