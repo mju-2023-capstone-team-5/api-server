@@ -24,11 +24,7 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImage(String prefixPath, MultipartFile multipartFile) {
-        return uploadImageWithFileName(prefixPath, multipartFile.getOriginalFilename(), multipartFile);
-    }
-
-    public String uploadImageWithFileName(String prefixPath, String specifiedFileName, MultipartFile multipartFile) {
+    public String uploadImage(String prefixPath, String imageName, MultipartFile multipartFile) {
         byte[] bytes = new byte[0];
         try {
             bytes = IOUtils.toByteArray(multipartFile.getInputStream());
@@ -37,10 +33,9 @@ public class AmazonS3Service {
         }
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
-        String uploadPathFile = prefixPath + specifiedFileName;
-
         ObjectMetadata metadata = new ObjectMetadata();
         String fileExtension = StringUtils.getFilenameExtension(multipartFile.getOriginalFilename());
+        String uploadPathFile = prefixPath + imageName + "." + fileExtension;
 
         if (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg")) {
             metadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
