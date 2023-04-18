@@ -56,7 +56,7 @@ public class ParkingLotController {
     }
 
     // 주차장 허가 문서 업로드 url
-    @PostMapping(value = "/parking-lots/{id}/images/permit-request")
+    @PostMapping(value = "/parking-lots/{id}/images/permit-request", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uplodaParkingLotPermitRequestImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
         return ResponseEntity.ok("success");
     }
