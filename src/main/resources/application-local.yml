@@ -16,6 +16,11 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+  servlet: # multipartFile 용량 늘려주는 설정
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
 management: # spring-boot-actuator 설정
   endpoint:
     web:
