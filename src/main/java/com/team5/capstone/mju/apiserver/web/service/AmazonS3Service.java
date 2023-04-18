@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -24,11 +25,11 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImageOriginalFileName(String contentType, String prefixPath, MultipartFile multipartFile) {
-        return uploadImage(contentType, prefixPath, multipartFile.getOriginalFilename(), multipartFile);
+    public String uploadImageOriginalFileName(String prefixPath, MultipartFile multipartFile) {
+        return uploadImage(prefixPath, multipartFile.getOriginalFilename(), multipartFile);
     }
 
-    public String uploadImage(String contentType, String prefixPath, String specifiedFileName, MultipartFile multipartFile) {
+    public String uploadImage(String prefixPath, String specifiedFileName, MultipartFile multipartFile) {
         byte[] bytes = new byte[0];
         try {
             bytes = IOUtils.toByteArray(multipartFile.getInputStream());
@@ -38,9 +39,18 @@ public class AmazonS3Service {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
         String uploadPathFile = prefixPath + specifiedFileName;
+
         ObjectMetadata metadata = new ObjectMetadata();
+        String fileExtension = StringUtils.getFilenameExtension(multipartFile.getOriginalFilename());
+
+        if (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg")) {
+            metadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        }
+        else if (fileExtension.equalsIgnoreCase("png")) {
+            metadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+        }
         metadata.setContentLength(bytes.length);
-        metadata.setContentType(contentType);
+
         s3.putObject(new PutObjectRequest(bucket, uploadPathFile, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return s3.getUrl(bucket, uploadPathFile).toString();
     }

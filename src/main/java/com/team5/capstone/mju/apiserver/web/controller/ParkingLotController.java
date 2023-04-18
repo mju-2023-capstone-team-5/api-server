@@ -7,6 +7,7 @@ import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,11 @@ public class ParkingLotController {
     // 주차장 정보 사진 업로드 url
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
-        return ResponseEntity.ok(amazonS3Service.uploadImage("image/png", "parking-lots/" + id + "/", "info.png", file));
+        ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
+
+        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        return ResponseEntity.ok(amazonS3Service.uploadImage("parking-lots/" + id + "/", "info.png", file));
     }
 
     // 주차장 허가 문서 업로드 url
