@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
+@RequestMapping("/api/v1")
 public class LoginController {
     private final LoginService loginService;
 
@@ -20,7 +21,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @PostMapping("/api/v1/login/token")
+    @PostMapping("/login/token")
     public ResponseEntity<LoginResponseDto> validationAndGenerateUserAndJwt(@RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(loginService.tryLogin(loginRequestDto));
     }

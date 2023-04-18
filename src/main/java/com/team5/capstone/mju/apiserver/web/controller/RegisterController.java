@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1")
 public class RegisterController {
     private final RegisterService registerService;
 
@@ -17,7 +19,7 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-    @PostMapping("/api/v1/register")
+    @PostMapping("/register")
     public ResponseEntity<String> addNewInfo(@RequestBody RegisterRequestDto registerRequestDto) {
         registerService.registerNewUser(registerRequestDto);
         return ResponseEntity.ok("success");
