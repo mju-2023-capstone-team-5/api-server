@@ -34,6 +34,7 @@ public class ParkingLotService {
         ParkingLotResponseDto dto = ParkingLotResponseDto.builder()
                 .address(parkingLot.getAddress())
                 .name(parkingLot.getName())
+                .imageUrl(parkingLot.getImageUrl())
                 .build();
 
         return dto;
@@ -99,6 +100,14 @@ public class ParkingLotService {
 
 
         return responseDto;
+    }
+
+    @Transactional
+    public void addImageUrl(Long id, String url) {
+        Optional<ParkingLot> found = parkingLotRepository.findById(id);
+        if (found.isPresent()) {
+            found.get().setImageUrl(url);
+        }
     }
 
 

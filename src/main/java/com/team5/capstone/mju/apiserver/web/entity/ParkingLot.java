@@ -30,6 +30,9 @@ public class ParkingLot {
     @Column(name = "free_information")
     private String freeInformation;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "latitude", precision = 10, scale = 8)
     private BigDecimal latitude;
 

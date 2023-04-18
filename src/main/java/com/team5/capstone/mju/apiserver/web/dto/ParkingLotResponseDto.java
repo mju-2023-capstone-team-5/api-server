@@ -22,6 +22,7 @@ public class ParkingLotResponseDto {
     private String status;
     private LocalDateTime openTime;
     private String freeInformation;
+    private String imageUrl;
 
     public ParkingLot ToEntity(){
 

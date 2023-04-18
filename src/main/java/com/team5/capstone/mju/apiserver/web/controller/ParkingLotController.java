@@ -45,7 +45,9 @@ public class ParkingLotController {
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
         ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
-        return ResponseEntity.ok(amazonS3Service.uploadImage("parking-lots/" + id + "/", "info", file));
+        String url = amazonS3Service.uploadImage("parking-lots/" + id + "/", "info", file);
+        parkingLotService.addImageUrl(id, url);
+        return ResponseEntity.ok("upload success");
     }
 
     // 주차장 허가 문서 업로드 url
