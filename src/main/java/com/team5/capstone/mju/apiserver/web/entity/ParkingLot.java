@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,6 +31,9 @@ public class ParkingLot {
     @Column(name = "free_information")
     private String freeInformation;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "latitude", precision = 10, scale = 8)
     private BigDecimal latitude;
 
@@ -45,4 +49,15 @@ public class ParkingLot {
     @Column(name = "open_time")
     private LocalDateTime openTime;
 
+    public void updateAllInfoSelf(ParkingLotRequestDto requestDto) {
+        this.setName(requestDto.getName());
+        this.setAddress(requestDto.getAddress());
+        this.setLatitude(requestDto.getLatitude());
+        this.setLongitude(requestDto.getLongitude());
+        this.setTotalSpace(requestDto.getTotalSpace());
+        this.setRemainingSpace(requestDto.getRemainingSpace());
+        this.setStatus(requestDto.getStatus());
+        this.setOpenTime(requestDto.getOpenTime());
+        this.setFreeInformation(requestDto.getFreeInformation());
+    }
 }
