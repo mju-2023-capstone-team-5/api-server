@@ -3,6 +3,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ParkingLotService {
     @Transactional
     public ParkingLotResponseDto createParkingLot(ParkingLotRequestDto requestDto) {
         // ParkingLot 엔티티를 데이터베이스에 저장
+        requestDto.setStatus(ParkingLotStatus.WAIT.getStatus());
         ParkingLot savedParkingLot = parkingLotRepository.save(requestDto.toEntity());
         return ParkingLotResponseDto.of(savedParkingLot);
     }
@@ -47,6 +49,13 @@ public class ParkingLotService {
         parkingLot.updateAllInfoSelf(requestDto);
         ParkingLot updatedParkingLot = parkingLotRepository.save(parkingLot);
         return ParkingLotResponseDto.of(updatedParkingLot);
+    }
+
+    @Transactional
+    public void updateParkingLotStatus(Long id) {
+        parkingLotRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."))
+                .updateStatusToParkingAvailableSelf(); // WAIT status인 경우 스스로 ParkingAvailable status로 변경
     }
 
     @Transactional

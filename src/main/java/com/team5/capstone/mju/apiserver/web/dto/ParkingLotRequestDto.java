@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class ParkingLotRequestDto {
     private BigDecimal longitude;
     private int totalSpace;
     private int remainingSpace;
+    @JsonIgnore
     private String status;
     private LocalDateTime openTime;
     private String freeInformation;

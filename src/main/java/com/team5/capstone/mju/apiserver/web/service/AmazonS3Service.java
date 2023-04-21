@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class AmazonS3Service {
@@ -47,5 +48,14 @@ public class AmazonS3Service {
 
         s3Client.putObject(new PutObjectRequest(bucket, uploadPathFile, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return s3Client.getUrl(bucket, uploadPathFile).toString();
+    }
+
+    public ArrayList<String> uploadImages(String prefixPath, String imageName, MultipartFile[] multipartFiles) {
+        ArrayList<String> urls = new ArrayList<>();
+        int index = 0;
+        for (MultipartFile file : multipartFiles) {
+            urls.add(uploadImage(prefixPath, imageName + "-" + (++index), file));
+        }
+        return urls;
     }
 }
