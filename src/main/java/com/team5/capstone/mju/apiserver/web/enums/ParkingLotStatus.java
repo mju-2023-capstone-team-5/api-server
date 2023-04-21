@@ -6,10 +6,9 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ParkingLotStatus {
-    INIT("init"),
-    WAIT("wait"),
-    PERMITTED("permitted");
-
+    WAIT("허가대기"),
+    PARKING_AVAILABLE("주차가능"),
+    PARKED("주차중");
     @Getter
     private String status;
 }

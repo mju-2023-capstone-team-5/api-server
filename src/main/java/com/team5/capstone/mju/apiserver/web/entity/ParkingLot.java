@@ -1,6 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -59,5 +60,9 @@ public class ParkingLot {
         this.setStatus(requestDto.getStatus());
         this.setOpenTime(requestDto.getOpenTime());
         this.setFreeInformation(requestDto.getFreeInformation());
+    }
+
+    public void updateStatusToParkingAvailableSelf() {
+        if (this.status.equals(ParkingLotStatus.WAIT.getStatus())) this.status = ParkingLotStatus.PARKING_AVAILABLE.getStatus();
     }
 }
