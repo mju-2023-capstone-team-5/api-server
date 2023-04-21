@@ -72,7 +72,7 @@ public class ParkingLotController {
     }
 
     // 주차장 허가 문서 업로드 url, 관리자에 의해 수동으로 검사되어 허가 처리되는 API
-    @Operation(summary = "주차장 허가 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드하는 API",
+    @Operation(summary = "주차장 허가(수동) 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드하는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공")
             }
@@ -85,7 +85,7 @@ public class ParkingLotController {
     }
 
     // 주차장 허가 문서 업로드 API, OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API
-    @Operation(summary = "주차장 허가 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드 하고 OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API",
+    @Operation(summary = "주차장 허가(자동) 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드 하고 OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공 및 허가 처리 완료 됨")
             }
