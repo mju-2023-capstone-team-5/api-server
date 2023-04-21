@@ -79,6 +79,8 @@ public class ParkingLotController {
     )
     @PostMapping(value = "/parking-lots/{id}/images/permit-request", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotPermitRequestImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
+        ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
+        amazonS3Service.uploadImages("parking-lots/" + id + "/permit-req/", "request", files);
         return ResponseEntity.ok("upload success");
     }
 
