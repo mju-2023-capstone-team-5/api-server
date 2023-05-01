@@ -46,9 +46,8 @@ public class ParkingLotService {
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
         // 주차장 상세 정보를 업데이트합니다.
-        parkingLot.updateAllInfoSelf(requestDto);
-        ParkingLot updatedParkingLot = parkingLotRepository.save(parkingLot);
-        return ParkingLotResponseDto.of(updatedParkingLot);
+        parkingLot.updateAllInfoSelf(requestDto); // 더티 체킹을 통한 self update
+        return ParkingLotResponseDto.of(parkingLot); // update 된 내용을 기반으로 한 DTO 생성 후 반환
     }
 
     @Transactional
