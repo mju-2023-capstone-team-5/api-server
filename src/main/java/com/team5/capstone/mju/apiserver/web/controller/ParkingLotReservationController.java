@@ -1,19 +1,46 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
-import com.team5.capstone.mju.apiserver.web.service.ParkingLotReservationService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ReservationResponseDto;
+import com.team5.capstone.mju.apiserver.web.service.ReservationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1") // API 요청 URL의 앞에 오는 Prefix 설정
-@Tag(name = "주차장 예약 Controller", description = "주차장 예약 관련 API 요청 Controller")
 public class ParkingLotReservationController {
-    private final ParkingLotReservationService reservationService;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ParkingLotReservationController(ParkingLotReservationService reservationService) {
+    public ParkingLotReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
+    }
+
+    @GetMapping("/reservation/{id}")
+    public ResponseEntity<ReservationResponseDto> getReservation(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(reservationService.getReservationInfo(id));
+    }
+
+    @PostMapping("/reservation")
+    public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto requestDto) {
+        log.info(requestDto.toString());
+        ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/reservation/{id}")
+    public ResponseEntity<ReservationResponseDto> updateReservation(@PathVariable Long id, @RequestBody ReservationRequestDto requestDto) {
+        log.info(requestDto.toString());
+        ReservationResponseDto responseDto = reservationService.updateReservation(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/reservation/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
     }
 }
