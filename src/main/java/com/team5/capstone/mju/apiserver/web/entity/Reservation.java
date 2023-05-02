@@ -1,5 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,4 +36,12 @@ public class Reservation {
     @Column(name = "status")
     private String status;
 
+    public void updateAllInfoSelf(ReservationRequestDto requestDto) {
+        this.setUserId(requestDto.getUserId());
+        this.setParkingLotId(requestDto.getParkingLotId());
+        this.setStartTime(requestDto.getStartTime());
+        this.setEndTime(requestDto.getEndTime());
+        this.setDateReserved(requestDto.getDateReserved());
+        this.setStatus(requestDto.getStatus());
+    }
 }
