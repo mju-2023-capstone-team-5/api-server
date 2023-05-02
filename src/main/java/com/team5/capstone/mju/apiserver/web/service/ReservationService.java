@@ -50,8 +50,7 @@ public class ReservationService {
 
         // 예약 상세 정보를 업데이트합니다.
         reservation.updateAllInfoSelf(requestDto);
-        Reservation updatedReservation = reservationRepository.save(reservation);
-        return ReservationResponseDto.of(updatedReservation);
+        return ReservationResponseDto.of(reservation);
     }
 
     // 예약정보 삭제
