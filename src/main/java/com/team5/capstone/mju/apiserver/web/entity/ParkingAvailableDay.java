@@ -8,18 +8,18 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "parking_avaliable_day")
-public class ParkingAvaliableDay {
+@Table(name = "parking_available_day")
+public class ParkingAvailableDay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "parking_avaliable_day_id", nullable = false)
+    @Column(name = "parking_available_day_id", nullable = false, columnDefinition = "int")
     private Long parkingAvailableDayId;
 
     @Column(name = "parking_lot_id")
     private Integer parkingLotId;
 
     @Lob
-    @Column(name = "available_day")
+    @Column(name = "available_day", columnDefinition = "TEXT")
     private String availableDay;
 
 }

@@ -19,7 +19,7 @@ public class ParkingLotType {
     private Integer parkingLotId;
 
     @Lob
-    @Column(name = "type")
+    @Column(name = "type", columnDefinition = "TEXT")
     private String type;
 
 }
