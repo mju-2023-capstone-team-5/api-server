@@ -4,7 +4,9 @@ import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
+import com.team5.capstone.mju.apiserver.web.repository.ParkingAvaliableDayRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
+import com.team5.capstone.mju.apiserver.web.repository.ParkingLotTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +18,14 @@ public class ParkingLotService {
 
     // Repository 객체
     private final ParkingLotRepository parkingLotRepository;
+    private final ParkingLotTypeRepository parkingLotTypeRepository;
+    private final ParkingAvaliableDayRepository avaliableDayRepository;
 
     @Autowired // 생성자를 통한 의존성 주입
-    public ParkingLotService(ParkingLotRepository parkingLotRepository) {
+    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingLotTypeRepository parkingLotTypeRepository, ParkingAvaliableDayRepository avaliableDayRepository) {
         this.parkingLotRepository = parkingLotRepository;
+        this.parkingLotTypeRepository = parkingLotTypeRepository;
+        this.avaliableDayRepository = avaliableDayRepository;
     }
 
     @Transactional(readOnly = true)
@@ -67,5 +73,15 @@ public class ParkingLotService {
     @Transactional
     public void deleteParkingLot(Long id) {
         parkingLotRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void createParkingLotType(Long id) {
+
+    }
+
+    @Transactional
+    public void createParkingAvailableDay(Long id) {
+        
     }
 }

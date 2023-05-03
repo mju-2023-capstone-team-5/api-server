@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.websocket.server.PathParam;
+
 @Slf4j
 @RestController  // 컨트롤러 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Controller 클래스는 스프링이 Bean으로 관리
 // RESTController ==> @Controller + @RestponseBody를 묶은 것으로,
@@ -55,6 +57,26 @@ public class ParkingLotController {
         log.info(requestDto.toString());
         ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @Operation(summary = "주차장 주차 가능 차종 정보 생성 API", description = "주차장의 주차 가능 차종 정보를 받아 새로운 주차 가능 차종 정보를 생성하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 차종 정보 생성에 성공")
+            }
+    )
+    @PostMapping("/parking-lots/{id}/type")
+    public void createParkingLotType(@PathVariable Long id) {
+        return;
+    }
+
+    @Operation(summary = "주차장 주차 가능 요일 정보 생성 API", description = "주차장의 주차 가능 요일 정보를 받아 새로운 주차 가능 요일 정보를 생성하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 요일 정보 생성에 성공")
+            }
+    )
+    @PostMapping("/parking-lots/{id}/available-days")
+    public void createAvailableDays(@PathVariable Long id) {
+        return;
     }
 
     // 주차장 정보 사진 업로드 url
