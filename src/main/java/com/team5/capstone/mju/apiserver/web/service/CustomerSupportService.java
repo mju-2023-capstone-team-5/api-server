@@ -43,14 +43,17 @@ public class CustomerSupportService {
         Qna qna = qnaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
 
-        // 예약 상세 정보를 업데이트합니다.
+        // QnA 상세 정보를 업데이트합니다.
         qna.updateAllInfoSelf(requestDto);
         return QnaResponseDto.of(qna);
     }
 
-    // 예약정보 삭제
+    // QnA정보 삭제
     @Transactional
     public void deleteQna(Long id) {
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
+
         qnaRepository.deleteById(id);
     }
 }
