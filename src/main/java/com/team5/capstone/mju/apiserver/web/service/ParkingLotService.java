@@ -42,6 +42,8 @@ public class ParkingLotService {
         // ParkingLot 엔티티를 데이터베이스에 저장
         requestDto.setStatus(ParkingLotStatus.WAIT.getStatus());
         ParkingLot savedParkingLot = parkingLotRepository.save(requestDto.toParkingLot());
+        parkingLotTypeRepository.save(requestDto.toParkingLotType(savedParkingLot.getParkingLotId()));
+        avaliableDayRepository.save(requestDto.toParkingAvailableDay(savedParkingLot.getParkingLotId()));
         return ParkingLotResponseDto.of(savedParkingLot);
     }
 
