@@ -59,25 +59,25 @@ public class ParkingLotController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @Operation(summary = "주차장 주차 가능 차종 정보 생성 API", description = "주차장의 주차 가능 차종 정보를 받아 새로운 주차 가능 차종 정보를 생성하는 API",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 차종 정보 생성에 성공")
-            }
-    )
-    @PostMapping("/parking-lots/{id}/type")
-    public void createParkingLotType(@PathVariable Long id) {
-        return;
-    }
-
-    @Operation(summary = "주차장 주차 가능 요일 정보 생성 API", description = "주차장의 주차 가능 요일 정보를 받아 새로운 주차 가능 요일 정보를 생성하는 API",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 요일 정보 생성에 성공")
-            }
-    )
-    @PostMapping("/parking-lots/{id}/available-days")
-    public void createAvailableDays(@PathVariable Long id) {
-        return;
-    }
+//    @Operation(summary = "주차장 주차 가능 차종 정보 생성 API", description = "주차장의 주차 가능 차종 정보를 받아 새로운 주차 가능 차종 정보를 생성하는 API",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 차종 정보 생성에 성공")
+//            }
+//    )
+//    @PostMapping("/parking-lots/{id}/type")
+//    public void createParkingLotType(@PathVariable Long id) {
+//        return;
+//    }
+//
+//    @Operation(summary = "주차장 주차 가능 요일 정보 생성 API", description = "주차장의 주차 가능 요일 정보를 받아 새로운 주차 가능 요일 정보를 생성하는 API",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "새로운 주차 가능 요일 정보 생성에 성공")
+//            }
+//    )
+//    @PostMapping("/parking-lots/{id}/available-days")
+//    public void createAvailableDays(@PathVariable Long id) {
+//        return;
+//    }
 
     // 주차장 정보 사진 업로드 url
     @Operation(summary = "주차장 정보 사진 업로드 API", description = "주차장의 사진을 받아 서버에 업로드하고 주차장 정보를 업데이트 하는 API",
