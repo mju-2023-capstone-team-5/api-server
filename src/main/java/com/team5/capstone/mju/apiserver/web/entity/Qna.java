@@ -1,5 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.QnaRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,4 +35,11 @@ public class Qna {
     @Column(name = "date_asked")
     private LocalDateTime dateAsked;
 
+    public void updateAllInfoSelf(QnaRequestDto requestDto) {
+        this.setUserId(requestDto.getUserId());
+        this.setTitle(requestDto.getTitle());
+        this.setContent(requestDto.getContent());
+        this.setAnswer(requestDto.getAnswer());
+        this.setDateAsked(requestDto.getDateAsked());
+    }
 }
