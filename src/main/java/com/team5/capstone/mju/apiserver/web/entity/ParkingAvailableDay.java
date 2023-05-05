@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,5 +22,9 @@ public class ParkingAvailableDay {
     @Lob
     @Column(name = "available_day", columnDefinition = "TEXT")
     private String availableDay;
+
+    public void updateAvailableDay(ParkingLotRequestDto parkingLotRequestDto) {
+        this.availableDay = parkingLotRequestDto.getAvailableDay();
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
+import com.team5.capstone.mju.apiserver.web.entity.ParkingAvailableDay;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
+import com.team5.capstone.mju.apiserver.web.entity.ParkingLotType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -23,6 +25,8 @@ public class ParkingLotResponseDto {
     private LocalDateTime openTime;
     private String freeInformation;
     private String imageUrl;
+    private String type;
+    private String availableDay;
 
     public ParkingLot ToEntity() {
 
@@ -55,5 +59,12 @@ public class ParkingLotResponseDto {
                 .freeInformation(parkingLot.getFreeInformation())
                 .imageUrl(parkingLot.getImageUrl())
                 .build();
+    }
+
+    public static ParkingLotResponseDto of(ParkingLot parkingLot, ParkingLotType type, ParkingAvailableDay available) {
+        ParkingLotResponseDto ofDto = ParkingLotResponseDto.of(parkingLot);
+        ofDto.setType(type.getType());
+        ofDto.setAvailableDay(available.getAvailableDay());
+        return ofDto;
     }
 }

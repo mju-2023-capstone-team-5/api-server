@@ -2,7 +2,9 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
+import com.team5.capstone.mju.apiserver.web.entity.ParkingAvailableDay;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
+import com.team5.capstone.mju.apiserver.web.entity.ParkingLotType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingAvaliableDayRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
@@ -32,8 +35,10 @@ public class ParkingLotService {
     public ParkingLotResponseDto getParkingLotInfo(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
-
-        return ParkingLotResponseDto.of(found);
+        ParkingLotType foundType = parkingLotTypeRepository.findByParkingLotId(Math.toIntExact(found.getParkingLotId())).get();
+        ParkingAvailableDay foundAvailableDay = avaliableDayRepository.findByParkingLotId(Math.toIntExact(found.getParkingLotId())).get();
+        // 주차장 상세 정보를 업데이트합니다.
+        return ParkingLotResponseDto.of(found, foundType, foundAvailableDay);
     }
 
     // 주차장 생성
@@ -42,9 +47,9 @@ public class ParkingLotService {
         // ParkingLot 엔티티를 데이터베이스에 저장
         requestDto.setStatus(ParkingLotStatus.WAIT.getStatus());
         ParkingLot savedParkingLot = parkingLotRepository.save(requestDto.toParkingLot());
-        parkingLotTypeRepository.save(requestDto.toParkingLotType(savedParkingLot.getParkingLotId()));
-        avaliableDayRepository.save(requestDto.toParkingAvailableDay(savedParkingLot.getParkingLotId()));
-        return ParkingLotResponseDto.of(savedParkingLot);
+        ParkingLotType savedType = parkingLotTypeRepository.save(requestDto.toParkingLotType(savedParkingLot.getParkingLotId()));
+        ParkingAvailableDay savedAvailableDay = avaliableDayRepository.save(requestDto.toParkingAvailableDay(savedParkingLot.getParkingLotId()));
+        return ParkingLotResponseDto.of(savedParkingLot, savedType, savedAvailableDay);
     }
 
     // 주차장 업데이트
@@ -52,10 +57,15 @@ public class ParkingLotService {
     public ParkingLotResponseDto updateParkingLot(Long id, ParkingLotRequestDto requestDto) {
         ParkingLot parkingLot = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
-
+        ParkingLotType foundType = parkingLotTypeRepository.findByParkingLotId(Math.toIntExact(parkingLot.getParkingLotId()))
+                .orElseThrow(() -> new EntityNotFoundException("주차 가능 차종을 찾을 수 없습니다."));
+        ParkingAvailableDay foundAvailableDay = avaliableDayRepository.findByParkingLotId(Math.toIntExact(parkingLot.getParkingLotId()))
+                .orElseThrow(() -> new EntityNotFoundException("주차 가능 요일을 찾을 수 없습니다."));
         // 주차장 상세 정보를 업데이트합니다.
         parkingLot.updateAllInfoSelf(requestDto); // 더티 체킹을 통한 self update
-        return ParkingLotResponseDto.of(parkingLot); // update 된 내용을 기반으로 한 DTO 생성 후 반환
+        foundType.updateType(requestDto);
+        foundAvailableDay.updateAvailableDay(requestDto);
+        return ParkingLotResponseDto.of(parkingLot, foundType, foundAvailableDay); // update 된 내용을 기반으로 한 DTO 생성 후 반환
     }
 
     @Transactional
@@ -74,7 +84,17 @@ public class ParkingLotService {
     
     @Transactional
     public void deleteParkingLot(Long id) {
-        parkingLotRepository.deleteById(id);
+        ParkingLot found = parkingLotRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+
+        ParkingLotType foundType = parkingLotTypeRepository.findByParkingLotId(Math.toIntExact(found.getParkingLotId()))
+                .orElseThrow(() -> new EntityNotFoundException("주차 가능 차종을 찾을 수 없습니다."));
+        ParkingAvailableDay foundAvailableDay = avaliableDayRepository.findByParkingLotId(Math.toIntExact(found.getParkingLotId()))
+                .orElseThrow(() -> new EntityNotFoundException("주차 가능 요일을 찾을 수 없습니다."));
+
+        parkingLotRepository.delete(found);
+        parkingLotTypeRepository.delete(foundType);
+        avaliableDayRepository.delete(foundAvailableDay);
     }
 
     @Transactional
