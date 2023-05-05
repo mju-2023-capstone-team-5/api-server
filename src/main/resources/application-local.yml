@@ -6,3 +6,15 @@ spring:
     # db_databasename == 데이터베이스 이름
     username: root # 데이터베이스 사용자 id
     password: ${DATABASE_LOCAL_PASSWORD} # 데이터베이스 사용자 비번
+
+  mail:
+    host: smtp.gmail.com # SMTP 서버 호스트
+    port: 587 # SMTP 서버 포트
+    username: ${EMAIL_USERNAME} # SMTP 계정 아이디
+    password: ${EMAIL_PASSWORD} # SMTP 계정 비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
