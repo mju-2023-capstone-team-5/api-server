@@ -3,22 +3,34 @@ package com.team5.capstone.mju.apiserver.web.service;
 import com.team5.capstone.mju.apiserver.web.dto.QnaRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.Qna;
+import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.repository.QnaRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
+
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class CustomerSupportService {
+
+    private final JavaMailSender mailSender;
+
+    private final UserRepository userRepository;
 
     // Repository 객체
     private final QnaRepository qnaRepository;
 
+
     @Autowired // 생성자를 통한 의존성 주입
-    public CustomerSupportService(QnaRepository qnaRepository) {
+    public CustomerSupportService(QnaRepository qnaRepository, JavaMailSender mailSender, UserRepository userRepository) {
         this.qnaRepository = qnaRepository;
+        this.mailSender = mailSender;
+        this.userRepository = userRepository;
     }
 
     @Transactional(readOnly = true)
@@ -34,7 +46,26 @@ public class CustomerSupportService {
     public QnaResponseDto createQna(QnaRequestDto requestDto) {
         // QnA 엔티티를 데이터베이스에 저장
         Qna savedQna = qnaRepository.save(requestDto.toEntity());
+
+        // 이메일 보내기
+        User user = userRepository.findById((long) requestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+        String userEmail = user.getEmail();
+        String emailSubject = "QnA 등록 안내";
+        String emailContent = "성공적으로 QnA를 등록하였습니다.";
+        sendEmail(userEmail, emailSubject, emailContent);
+
         return QnaResponseDto.of(savedQna);
+    }
+
+
+
+    public void sendEmail(String userEmail, String emailSubject, String emailContent) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userEmail);
+        message.setSubject(emailSubject);
+        message.setText(emailContent);
+        mailSender.send(message);
     }
 
     // QnA 업데이트

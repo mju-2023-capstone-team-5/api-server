@@ -37,6 +37,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// javamail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	compileOnly 'org.projectlombok:lombok'
