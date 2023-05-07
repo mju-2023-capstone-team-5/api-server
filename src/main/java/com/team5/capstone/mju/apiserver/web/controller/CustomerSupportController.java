@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1") // API 요청 URL의 앞에 오는 Prefix 설정
@@ -23,13 +25,13 @@ public class CustomerSupportController {
         this.customerSupportService = customerSupportService;
     }
 
-    @Operation(summary = "QnA 정보 반환 API", description = "QnA 아이디를 받아 정보를 반환하는 API",
+    @Operation(summary = "QnA 정보 반환 API", description = "유저 아이디를 받아 QnA 정보를 리스트로 반환하는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "QnA 정보 조회에 성공")
             }
     )
     @GetMapping("/qna/{id}")
-    public ResponseEntity<QnaResponseDto> getQna(@PathVariable("id") Long id) {
+    public ResponseEntity<List<QnaResponseDto>> getQna(@PathVariable("id") Long id) {
         return ResponseEntity.ok(customerSupportService.getQnaInfo(id));
     }
 
