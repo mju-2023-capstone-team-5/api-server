@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
@@ -34,11 +37,21 @@ public class CustomerSupportService {
     }
 
     @Transactional(readOnly = true)
-    public QnaResponseDto getQnaInfo(Long id) {
-        Qna found = qnaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
+    public List<QnaResponseDto> getQnaInfo(Long id) {
+        ArrayList<Qna> foundList = qnaRepository.findAllByUserId(Math.toIntExact(id));
 
-        return QnaResponseDto.of(found);
+        ArrayList<QnaResponseDto> responseDtos = new ArrayList<>();
+
+        foundList.forEach((qna -> {
+            responseDtos.add(QnaResponseDto.of(qna));
+        }));
+
+        return responseDtos;
+//
+//        Qna found = qnaRepository.findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
+//
+//        return QnaResponseDto.of(found);
     }
 
     // QnA생성
