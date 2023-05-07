@@ -26,6 +26,8 @@ public class MailConfig {
         mailSender.setUsername(env.getProperty("spring.mail.username"));
         mailSender.setPassword(env.getProperty("spring.mail.password"));
 
+        mailSender.setDefaultEncoding("utf-8");
+
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", env.getProperty("spring.mail.properties.mail.smtp.auth"));
