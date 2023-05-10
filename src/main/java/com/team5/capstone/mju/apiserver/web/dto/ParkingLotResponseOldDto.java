@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotResponseDto {
+public class ParkingLotResponseOldDto {
     private int parkingLotId;
     private String name;
     private String address;
@@ -41,8 +41,8 @@ public class ParkingLotResponseDto {
         return parkingLot;
     }
 
-    public static ParkingLotResponseDto of(ParkingLot parkingLot) {
-        return ParkingLotResponseDto.builder()
+    public static ParkingLotResponseOldDto of(ParkingLot parkingLot) {
+        return ParkingLotResponseOldDto.builder()
                 .parkingLotId(Math.toIntExact(parkingLot.getParkingLotId()))
                 .name(parkingLot.getName())
                 .address(parkingLot.getAddress())

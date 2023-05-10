@@ -1,15 +1,12 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotPrice;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotTime;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @ToString
 @Getter
@@ -17,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotRequestDto {
+public class ParkingLotDto {
 
     private String name;
     private String address;

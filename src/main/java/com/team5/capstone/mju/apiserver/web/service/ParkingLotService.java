@@ -1,7 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
@@ -23,31 +23,31 @@ public class ParkingLotService {
     }
 
     @Transactional(readOnly = true)
-    public ParkingLotResponseDto getParkingLotInfo(Long id) {
+    public ParkingLotResponseOldDto getParkingLotInfo(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
-        return ParkingLotResponseDto.of(found);
+        return ParkingLotResponseOldDto.of(found);
     }
 
     // 주차장 생성
     @Transactional
-    public ParkingLotResponseDto createParkingLot(ParkingLotRequestOldDto requestDto) {
+    public ParkingLotResponseOldDto createParkingLot(ParkingLotRequestOldDto requestDto) {
         // ParkingLot 엔티티를 데이터베이스에 저장
         requestDto.setStatus(ParkingLotStatus.WAIT.getStatus());
         ParkingLot savedParkingLot = parkingLotRepository.save(requestDto.toEntity());
-        return ParkingLotResponseDto.of(savedParkingLot);
+        return ParkingLotResponseOldDto.of(savedParkingLot);
     }
 
     // 주차장 업데이트
     @Transactional
-    public ParkingLotResponseDto updateParkingLot(Long id, ParkingLotRequestOldDto requestDto) {
+    public ParkingLotResponseOldDto updateParkingLot(Long id, ParkingLotRequestOldDto requestDto) {
         ParkingLot parkingLot = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
         // 주차장 상세 정보를 업데이트합니다.
         parkingLot.updateAllInfoSelf(requestDto); // 더티 체킹을 통한 self update
-        return ParkingLotResponseDto.of(parkingLot); // update 된 내용을 기반으로 한 DTO 생성 후 반환
+        return ParkingLotResponseOldDto.of(parkingLot); // update 된 내용을 기반으로 한 DTO 생성 후 반환
     }
 
     @Transactional
