@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Slf4j
 @RestController  // 컨트롤러 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Controller 클래스는 스프링이 Bean으로 관리
 // RESTController ==> @Controller + @RestponseBody를 묶은 것으로,
@@ -43,6 +46,27 @@ public class ParkingLotController {
     public ResponseEntity<ParkingLotResponseDto> getParkingLot(@PathVariable("id") Long id) { // url path에 있는 {id}와 변수를 매핑
         // 서비스를 호출하여 얻어온 결과값을 반환. 반환 시 json 구조의 String으로 스프링이 해석하여 API 요청에 반환해줌
         return ResponseEntity.ok(parkingLotService.getParkingLotInfo(id));
+    }
+
+    @Operation(summary = "주차장 정보 반환 API", description = "왼쪽 위, 오른쪽 아래 사각형의 범위를 받아 주차장들의 정보를 반환하는 API",
+            parameters = {
+                    @Parameter(name = "x1", description = "왼쪽 위 위도"),
+                    @Parameter(name = "y1", description = "왼쪽 위 경도"),
+                    @Parameter(name = "x2", description = "오른쪽 아래 위도"),
+                    @Parameter(name = "y2", description = "오른쪽 아래 경도")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공")
+            }
+    )
+    @GetMapping("/parking-lots/rectangle")
+    public ResponseEntity<List<ParkingLotResponseDto>> getParkingLotsInDisplay(
+            @RequestParam BigDecimal x1, // 왼쪽 위 위도
+            @RequestParam BigDecimal y1, // 왼쪽 위 경도
+            @RequestParam BigDecimal x2, // 오른쪽 아래 위도
+            @RequestParam BigDecimal y2 // 오른쪽 아래 경도
+    ) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotsInRectangle(x1, y1, x2, y2));
     }
 
     @Operation(summary = "주차장 정보 생성 API", description = "주차장의 정보를 받아 새로운 주차장을 생성하는 API",
