@@ -2,6 +2,8 @@ package com.team5.capstone.mju.apiserver.web.util;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class MapUtil {
 
@@ -15,13 +17,14 @@ public class MapUtil {
      * @param y2 오른쪽 아래 경도
      * @return
      */
-    public boolean isInsideRectangle(double x, double y, double x1, double y1, double x2, double y2) {
-        double topLeftX = Math.min(x1, x2);
-        double topLeftY = Math.max(y1, y2);
-        double bottomRightX = Math.max(x1, x2);
-        double bottomRightY = Math.min(y1, y2);
+    public boolean isInsideRectangle(BigDecimal x, BigDecimal y, BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
+        BigDecimal topLeftX = x1.min(x2);
+        BigDecimal topLeftY = y1.max(y2);
+        BigDecimal bottomRightX = x1.max(x2);
+        BigDecimal bottomRightY = y1.min(y2);
 
-        return (x >= topLeftX && x <= bottomRightX && y >= bottomRightY && y <= topLeftY);
+        return (x.compareTo(topLeftX) >= 0 && x.compareTo(bottomRightX) <= 0 &&
+                y.compareTo(bottomRightY) >= 0 && y.compareTo(topLeftY) <= 0);
     }
 
 }

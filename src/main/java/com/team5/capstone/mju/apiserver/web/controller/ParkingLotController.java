@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -60,10 +61,10 @@ public class ParkingLotController {
     )
     @GetMapping("/parking-lots/rectangle")
     public ResponseEntity<List<ParkingLotResponseDto>> getParkingLotsInDisplay(
-            @RequestParam double x1, // 왼쪽 위 위도
-            @RequestParam double y1, // 왼쪽 위 경도
-            @RequestParam double x2, // 오른쪽 아래 위도
-            @RequestParam double y2 // 오른쪽 아래 경도
+            @RequestParam BigDecimal x1, // 왼쪽 위 위도
+            @RequestParam BigDecimal y1, // 왼쪽 위 경도
+            @RequestParam BigDecimal x2, // 오른쪽 아래 위도
+            @RequestParam BigDecimal y2 // 오른쪽 아래 경도
     ) {
         return ResponseEntity.ok(null);
     }
