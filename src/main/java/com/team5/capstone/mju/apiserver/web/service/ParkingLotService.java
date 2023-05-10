@@ -1,6 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
@@ -32,7 +32,7 @@ public class ParkingLotService {
 
     // 주차장 생성
     @Transactional
-    public ParkingLotResponseDto createParkingLot(ParkingLotRequestDto requestDto) {
+    public ParkingLotResponseDto createParkingLot(ParkingLotRequestOldDto requestDto) {
         // ParkingLot 엔티티를 데이터베이스에 저장
         requestDto.setStatus(ParkingLotStatus.WAIT.getStatus());
         ParkingLot savedParkingLot = parkingLotRepository.save(requestDto.toEntity());
@@ -41,7 +41,7 @@ public class ParkingLotService {
 
     // 주차장 업데이트
     @Transactional
-    public ParkingLotResponseDto updateParkingLot(Long id, ParkingLotRequestDto requestDto) {
+    public ParkingLotResponseDto updateParkingLot(Long id, ParkingLotRequestOldDto requestDto) {
         ParkingLot parkingLot = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 

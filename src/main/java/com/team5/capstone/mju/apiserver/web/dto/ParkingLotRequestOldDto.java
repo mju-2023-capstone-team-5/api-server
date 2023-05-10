@@ -1,11 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
-import com.team5.capstone.mju.apiserver.web.vo.ParkingLotPrice;
-import com.team5.capstone.mju.apiserver.web.vo.ParkingLotTime;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,31 +13,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotRequestDto {
+public class ParkingLotRequestOldDto {
 
     private String name;
     private String address;
-    private String freeInformation;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private int totalSpace;
     private int remainingSpace;
-    private int ownerId;
-
-    @JsonProperty(value = "type")
-    private String[] type;
-
-    @JsonProperty(value = "availableDay")
-    private String availableDay;
-
-    @JsonProperty(value = "availableTime")
-    private ParkingLotTime[] time;
-
-    @JsonProperty(value = "monthly", required = false)
-    private ParkingLotPrice monthPrice;
-
-    @JsonProperty(value = "hourly", required = false)
-    private ParkingLotPrice hourPrice;
+    @JsonIgnore
+    private String status;
+    private LocalDateTime openTime;
+    private String freeInformation;
 
     public ParkingLot toEntity() {
 
@@ -53,7 +36,7 @@ public class ParkingLotRequestDto {
         parkingLot.setTotalSpace(Math.toIntExact(totalSpace));
         parkingLot.setRemainingSpace(Math.toIntExact(remainingSpace));
 //        parkingLot.setOpenTime(openTime);
-//        parkingLot.setStatus(status);
+        parkingLot.setStatus(status);
         parkingLot.setFreeInformation(freeInformation);
 
         return parkingLot;

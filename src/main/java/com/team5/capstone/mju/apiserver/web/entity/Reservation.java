@@ -1,6 +1,5 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,14 +1,12 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -64,7 +62,7 @@ public class ParkingLot {
     @Column(name = "available_day", columnDefinition = "text")
     private String availableDay;
 
-    public void updateAllInfoSelf(ParkingLotRequestDto requestDto) {
+    public void updateAllInfoSelf(ParkingLotRequestOldDto requestDto) {
 
         this.setName(requestDto.getName());
         this.setAddress(requestDto.getAddress());

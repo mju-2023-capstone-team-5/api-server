@@ -1,13 +1,8 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationResponseDto;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
-import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
-import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

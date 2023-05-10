@@ -1,12 +1,11 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.AmazonS3Service;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +50,7 @@ public class ParkingLotController {
             }
     )
     @PostMapping("/parking-lots")
-    public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotRequestDto requestDto) {
+    public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotRequestOldDto requestDto) {
         log.info(requestDto.toString());
         ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
@@ -101,7 +100,7 @@ public class ParkingLotController {
             }
     )
     @PatchMapping("/parking-lots/{id}")
-    public ResponseEntity<ParkingLotResponseDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotRequestDto requestDto) {
+    public ResponseEntity<ParkingLotResponseDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotRequestOldDto requestDto) {
         log.info(requestDto.toString());
         ParkingLotResponseDto responseDto = parkingLotService.updateParkingLot(id, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -116,5 +115,10 @@ public class ParkingLotController {
     public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
         parkingLotService.deleteParkingLot(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/parking-lots/test")
+    public void test(@RequestBody ParkingLotRequestDto requestDto) {
+        return;
     }
 }
