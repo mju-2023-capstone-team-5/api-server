@@ -5,14 +5,21 @@ import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
+import com.team5.capstone.mju.apiserver.web.util.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
+
+    @Autowired
+    private MapUtil mapUtil;
 
     // Repository 객체
     private final ParkingLotRepository parkingLotRepository;
@@ -28,6 +35,26 @@ public class ParkingLotService {
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
         return ParkingLotResponseDto.of(found);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ParkingLotResponseDto> getParkingLotsInRectangle(BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
+        List<ParkingLot> all = parkingLotRepository.findAll();
+
+        List<ParkingLotResponseDto> found = all.stream().filter((parkingLot -> {
+                    return mapUtil.isInsideRectangle(
+                            parkingLot.getLatitude(),
+                            parkingLot.getLongitude(),
+                            x1,
+                            y1,
+                            x2,
+                            y2
+                    );
+                }))
+                .map((ParkingLotResponseDto::of))
+                .collect(Collectors.toList());
+
+        return found;
     }
 
     // 주차장 생성

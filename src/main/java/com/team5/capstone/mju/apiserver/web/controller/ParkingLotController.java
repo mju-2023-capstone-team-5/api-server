@@ -66,7 +66,7 @@ public class ParkingLotController {
             @RequestParam BigDecimal x2, // 오른쪽 아래 위도
             @RequestParam BigDecimal y2 // 오른쪽 아래 경도
     ) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(parkingLotService.getParkingLotsInRectangle(x1, y1, x2, y2));
     }
 
     @Operation(summary = "주차장 정보 생성 API", description = "주차장의 정보를 받아 새로운 주차장을 생성하는 API",
