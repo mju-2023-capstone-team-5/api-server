@@ -45,14 +45,8 @@ public class ParkingLot {
     @Column(name = "remaining_space")
     private Integer remainingSpace;
 
-    @Column(name = "time_id")
-    private Integer timeId;
-
     @Column(name = "owner_id")
     private Integer ownerId;
-
-    @Column(name = "price_id")
-    private Integer priceId;
 
     @Lob
     @Column(name = "car_type", columnDefinition = "text")

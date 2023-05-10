@@ -50,9 +50,9 @@ public class ParkingLotController {
             }
     )
     @PostMapping("/parking-lots")
-    public ResponseEntity<ParkingLotResponseOldDto> createParkingLot(@RequestBody ParkingLotRequestOldDto requestDto) {
+    public ResponseEntity<ParkingLotDto> createParkingLot(@RequestBody ParkingLotDto requestDto) {
         log.info(requestDto.toString());
-        ParkingLotResponseOldDto responseDto = parkingLotService.createParkingLot(requestDto);
+        ParkingLotDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
