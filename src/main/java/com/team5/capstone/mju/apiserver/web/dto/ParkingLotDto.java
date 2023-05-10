@@ -5,6 +5,7 @@ import com.team5.capstone.mju.apiserver.web.entity.ParkingAvailableTime;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingPrice;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotPrice;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotTime;
 import lombok.*;
@@ -90,7 +91,7 @@ public class ParkingLotDto {
         }
 
         ParkingPrice price = new ParkingPrice();
-        price.setDateType("월간결제");
+        price.setDateType(ParkingLotPriceType.MONTH.getType());
         price.setMinimum(monthPrice.getMinimum());
         price.setSurcharge(monthPrice.getSurcharge());
 
@@ -103,7 +104,7 @@ public class ParkingLotDto {
         }
 
         ParkingPrice price = new ParkingPrice();
-        price.setDateType("시간결제");
+        price.setDateType(ParkingLotPriceType.HOUR.getType());
         price.setMinimum(hourPrice.getMinimum());
         price.setSurcharge(hourPrice.getSurcharge());
 
