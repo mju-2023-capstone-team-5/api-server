@@ -47,10 +47,25 @@ public class ParkingLot {
     @Column(name = "remaining_space")
     private Integer remainingSpace;
 
-    @Column(name = "open_time")
-    private LocalDateTime openTime;
+    @Column(name = "time_id")
+    private Integer timeId;
+
+    @Column(name = "owner_id")
+    private Integer ownerId;
+
+    @Column(name = "price_id")
+    private Integer priceId;
+
+    @Lob
+    @Column(name = "car_type", columnDefinition = "text")
+    private String carType;
+
+    @Lob
+    @Column(name = "available_day", columnDefinition = "text")
+    private String availableDay;
 
     public void updateAllInfoSelf(ParkingLotRequestDto requestDto) {
+
         this.setName(requestDto.getName());
         this.setAddress(requestDto.getAddress());
         this.setLatitude(requestDto.getLatitude());
@@ -58,7 +73,7 @@ public class ParkingLot {
         this.setTotalSpace(requestDto.getTotalSpace());
         this.setRemainingSpace(requestDto.getRemainingSpace());
         this.setStatus(requestDto.getStatus());
-        this.setOpenTime(requestDto.getOpenTime());
+//        this.setOpenTime(requestDto.getOpenTime());
         this.setFreeInformation(requestDto.getFreeInformation());
     }
 

@@ -35,7 +35,7 @@ public class ParkingLotRequestDto {
         parkingLot.setLongitude(longitude);
         parkingLot.setTotalSpace(Math.toIntExact(totalSpace));
         parkingLot.setRemainingSpace(Math.toIntExact(remainingSpace));
-        parkingLot.setOpenTime(openTime);
+//        parkingLot.setOpenTime(openTime);
         parkingLot.setStatus(status);
         parkingLot.setFreeInformation(freeInformation);
 

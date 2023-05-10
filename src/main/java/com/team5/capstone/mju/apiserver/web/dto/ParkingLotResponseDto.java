@@ -34,7 +34,7 @@ public class ParkingLotResponseDto {
         parkingLot.setLongitude(longitude);
         parkingLot.setTotalSpace(Math.toIntExact(totalSpace));
         parkingLot.setRemainingSpace(Math.toIntExact(remainingSpace));
-        parkingLot.setOpenTime(openTime);
+//        parkingLot.setOpenTime(openTime);
         parkingLot.setStatus(status);
         parkingLot.setFreeInformation(freeInformation);
 
@@ -50,7 +50,7 @@ public class ParkingLotResponseDto {
                 .longitude(parkingLot.getLongitude())
                 .totalSpace(parkingLot.getTotalSpace())
                 .remainingSpace(parkingLot.getRemainingSpace())
-                .openTime(parkingLot.getOpenTime())
+//                .openTime(parkingLot.getOpenTime())
                 .status(parkingLot.getStatus())
                 .freeInformation(parkingLot.getFreeInformation())
                 .imageUrl(parkingLot.getImageUrl())
