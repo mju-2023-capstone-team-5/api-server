@@ -7,16 +7,24 @@ import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.*;
+import com.team5.capstone.mju.apiserver.web.util.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
+
+    @Autowired
+    private MapUtil mapUtil;
 
     // Repository 객체
     private final ParkingLotRepository parkingLotRepository;
@@ -44,6 +52,25 @@ public class ParkingLotService {
         List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
 
         return ParkingLotDto.of(found, owner, availableTimeList, priceList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ParkingLotDto> getParkingLotsInRectangle(BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
+        List<ParkingLot> all = parkingLotRepository.findAll();
+
+        List<ParkingLot> found = all.stream()
+                .filter(parkingLot -> {
+                    return mapUtil.isInsideRectangle(parkingLot.getLatitude(), parkingLot.getLongitude(), x1, y1, x2, y2);
+                })
+                .collect(Collectors.toList());
+
+        List<ParkingLotDto> resultDtos = new ArrayList<>();
+
+        found.forEach(parkingLot -> {
+            resultDtos.add(getParkingLotInfo(parkingLot.getParkingLotId()));
+        });
+
+        return resultDtos;
     }
 
     // 주차장 생성
