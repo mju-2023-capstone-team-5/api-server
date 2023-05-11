@@ -26,4 +26,10 @@ public class ParkingPrice {
 
     @Column(name = "date_type", columnDefinition = "varchar(16)")
     private String dateType;
+
+    public void updateAllSelf(ParkingPrice price) {
+        this.parkingLotId = price.parkingLotId;
+        this.minimum = price.minimum;;
+        this.surcharge = price.surcharge;
+    }
 }

@@ -100,9 +100,9 @@ public class ParkingLotController {
             }
     )
     @PatchMapping("/parking-lots/{id}")
-    public ResponseEntity<ParkingLotResponseOldDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotRequestOldDto requestDto) {
+    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @RequestBody ParkingLotDto requestDto) {
         log.info(requestDto.toString());
-        ParkingLotResponseOldDto responseDto = parkingLotService.updateParkingLot(id, requestDto);
+        ParkingLotDto responseDto = parkingLotService.updateParkingLot(id, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import lombok.Getter;
@@ -65,8 +66,20 @@ public class ParkingLot {
         this.setTotalSpace(requestDto.getTotalSpace());
         this.setRemainingSpace(requestDto.getRemainingSpace());
         this.setStatus(requestDto.getStatus());
-//        this.setOpenTime(requestDto.getOpenTime());
         this.setFreeInformation(requestDto.getFreeInformation());
+    }
+
+    public void updateAllInfoSelf(ParkingLot parkingLot) {
+        this.setName(parkingLot.getName());
+        this.setAddress(parkingLot.getAddress());
+        this.setLatitude(parkingLot.getLatitude());
+        this.setLongitude(parkingLot.getLongitude());
+        this.setTotalSpace(parkingLot.getTotalSpace());
+        this.setRemainingSpace(parkingLot.getRemainingSpace());
+        this.setFreeInformation(parkingLot.getFreeInformation());
+        this.setCarType(parkingLot.getCarType());
+        this.setAvailableDay(parkingLot.getAvailableDay());
+        this.setOwnerId(parkingLot.getOwnerId());
     }
 
     public void updateStatusToParkingAvailableSelf() {

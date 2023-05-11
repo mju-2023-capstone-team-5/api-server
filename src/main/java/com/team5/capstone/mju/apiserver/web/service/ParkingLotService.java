@@ -4,6 +4,7 @@ import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
@@ -90,13 +92,48 @@ public class ParkingLotService {
 
     // 주차장 업데이트
     @Transactional
-    public ParkingLotResponseOldDto updateParkingLot(Long id, ParkingLotRequestOldDto requestDto) {
-        ParkingLot parkingLot = parkingLotRepository.findById(id)
+    public ParkingLotDto updateParkingLot(Long id, ParkingLotDto requestDto) {
+        ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+        ParkingLot requestParkingLot = requestDto.parseToParkingLot();
 
         // 주차장 상세 정보를 업데이트합니다.
-        parkingLot.updateAllInfoSelf(requestDto); // 더티 체킹을 통한 self update
-        return ParkingLotResponseOldDto.of(parkingLot); // update 된 내용을 기반으로 한 DTO 생성 후 반환
+        found.updateAllInfoSelf(requestParkingLot); // 더티 체킹을 통한 self update
+
+        // owner를 업데이트
+        ParkingLotOwner requestOwner = requestDto.parseToParkingLotOwner();
+        requestOwner.setParkingLotId(Math.toIntExact(found.getParkingLotId()));
+        ParkingLotOwner foundOwner = ownerRepository.findByParkingLotId(Math.toIntExact(id)).get();
+        foundOwner.updateAllSelf(requestOwner);
+
+        // price 정보를 업데이트
+        Optional<ParkingPrice> foundOldHour = Optional.ofNullable(priceRepository.findByParkingLotIdAndDateType(Math.toIntExact(id), ParkingLotPriceType.HOUR.getType()));
+        foundOldHour.ifPresent(priceRepository::delete);
+        Optional<ParkingPrice> foundOldMonth = Optional.ofNullable(priceRepository.findByParkingLotIdAndDateType(Math.toIntExact(id), ParkingLotPriceType.MONTH.getType()));
+        foundOldMonth.ifPresent(priceRepository::delete);
+
+        Optional<ParkingPrice> foundNewHourOptional = requestDto.parseHourlyToParkingLotPrice();
+        foundNewHourOptional.ifPresent(foundNewHour -> {
+            foundNewHour.setParkingLotId(Math.toIntExact(id));
+            priceRepository.save(foundNewHour);
+        });
+        Optional<ParkingPrice> foundNewMonthOptional = requestDto.parseMonthlyToParkingLotPrice();
+        foundNewMonthOptional.ifPresent(foundNewMonth -> {
+            foundNewMonth.setParkingLotId(Math.toIntExact(id));
+            priceRepository.save(foundNewMonth);
+        });
+
+        // time 정보를 업데이트
+        List<ParkingAvailableTime> foundOldTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
+        availableTimeRepository.deleteAll(foundOldTimeList);
+
+        List<ParkingAvailableTime> newAvailableList = requestDto.parseToParkingAvailableTimeList();
+        newAvailableList.forEach(available -> {
+            available.setParkingLotId(Math.toIntExact(id));
+        });
+        availableTimeRepository.saveAll(newAvailableList);
+
+        return requestDto;
     }
 
     @Transactional

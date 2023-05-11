@@ -23,4 +23,10 @@ public class ParkingLotOwner {
 
     @Column(name = "inquiry_phone_number", nullable = false, columnDefinition = "varchar(16)")
     private String inquiryPhoneNumber;
+
+    public void updateAllSelf(ParkingLotOwner owner) {
+        this.parkingLotId = owner.parkingLotId;
+        this.ownerId = owner.ownerId;
+        this.inquiryPhoneNumber = owner.inquiryPhoneNumber;
+    }
 }
