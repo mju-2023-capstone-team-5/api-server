@@ -152,6 +152,8 @@ public class ParkingLotService {
 
     @Transactional
     public void deleteParkingLot(Long id) {
-        parkingLotRepository.deleteById(id);
+        ParkingLot found = parkingLotRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+        parkingLotRepository.delete(found);
     }
 }
