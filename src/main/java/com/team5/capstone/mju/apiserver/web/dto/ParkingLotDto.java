@@ -125,4 +125,54 @@ public class ParkingLotDto {
                 });
         return parkingAvailableTimeList;
     }
+
+    public static ParkingLotDto of(ParkingLot parkingLot, ParkingLotOwner owner, List<ParkingAvailableTime> availableList, List<ParkingPrice> priceList) {
+
+        Optional<ParkingPrice> month = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.MONTH.getType()))
+                .findFirst();
+
+        ParkingLotPrice monthPrice = null;
+        if (month.isPresent()) {
+            monthPrice = new ParkingLotPrice();
+            monthPrice.setMinimum(month.get().getMinimum());
+            monthPrice.setSurcharge(month.get().getSurcharge());
+        }
+
+        Optional<ParkingPrice> hour = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.HOUR.getType()))
+                .findFirst();
+
+        ParkingLotPrice hourPrice = null;
+        if (hour.isPresent()) {
+            hourPrice = new ParkingLotPrice();
+            hourPrice.setMinimum(hour.get().getMinimum());
+            hourPrice.setSurcharge(hour.get().getSurcharge());
+        }
+
+        List<ParkingLotTime> times = new ArrayList<>();
+        availableList.forEach(parkingAvailableTime -> {
+            ParkingLotTime time1 = new ParkingLotTime();
+            time1.setStartTime(parkingAvailableTime.getStartTime());
+            time1.setEndTime(parkingAvailableTime.getEndTime());
+            time1.setStartMinute(parkingAvailableTime.getStartMinute());
+            time1.setEndMinute(parkingAvailableTime.getEndMinute());
+            times.add(time1);
+        });
+
+        return ParkingLotDto.builder()
+                .name(parkingLot.getName())
+                .address(parkingLot.getAddress())
+                .freeInformation(parkingLot.getFreeInformation())
+                .latitude(parkingLot.getLatitude())
+                .longitude(parkingLot.getLongitude())
+                .totalSpace(parkingLot.getTotalSpace())
+                .remainingSpace(parkingLot.getRemainingSpace())
+                .ownerId(owner.getOwnerId())
+                .phoneNumber(owner.getInquiryPhoneNumber())
+                .availableDay(parkingLot.getAvailableDay().split(","))
+                .type(parkingLot.getCarType().split(","))
+                .monthPrice(monthPrice)
+                .hourPrice(hourPrice)
+                .time(times.toArray(new ParkingLotTime[0]))
+                .build();
+    }
 }

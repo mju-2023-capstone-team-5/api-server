@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ParkingLotService {
@@ -34,11 +33,15 @@ public class ParkingLotService {
     }
 
     @Transactional(readOnly = true)
-    public ParkingLotResponseOldDto getParkingLotInfo(Long id) {
+    public ParkingLotDto getParkingLotInfo(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
-        return ParkingLotResponseOldDto.of(found);
+        ParkingLotOwner owner = ownerRepository.findByParkingLotId(Math.toIntExact(id)).get();
+        List<ParkingAvailableTime> availableTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
+        List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
+
+        return ParkingLotDto.of(found, owner, availableTimeList, priceList);
     }
 
     // 주차장 생성
