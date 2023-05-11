@@ -1,5 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +18,9 @@ public class Grade {
     @Column(name = "grade_id", nullable = false, columnDefinition = "int")
     private Long gradeId;
 
+    @Column(name = "parking_lot_id")
+    private Integer parkingLotId;
+
     @Column(name = "user_id")
     private Integer userId;
 
@@ -29,4 +34,11 @@ public class Grade {
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
+    public void updateAllInfoSelf(GradeRequestDto requestDto) {
+        this.setParkingLotId(requestDto.getParkingLotId());
+        this.setUserId(requestDto.getUserId());
+        this.setRating(requestDto.getRating());
+        this.setComment(requestDto.getComment());
+        this.setTimestamp(requestDto.getTimestamp());
+    }
 }
