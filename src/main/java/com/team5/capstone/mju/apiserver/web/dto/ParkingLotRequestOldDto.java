@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotRequestDto {
+public class ParkingLotRequestOldDto {
 
     private String name;
     private String address;
@@ -35,7 +35,7 @@ public class ParkingLotRequestDto {
         parkingLot.setLongitude(longitude);
         parkingLot.setTotalSpace(Math.toIntExact(totalSpace));
         parkingLot.setRemainingSpace(Math.toIntExact(remainingSpace));
-        parkingLot.setOpenTime(openTime);
+//        parkingLot.setOpenTime(openTime);
         parkingLot.setStatus(status);
         parkingLot.setFreeInformation(freeInformation);
 

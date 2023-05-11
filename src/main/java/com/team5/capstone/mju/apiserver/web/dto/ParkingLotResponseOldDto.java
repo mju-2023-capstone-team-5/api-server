@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkingLotResponseDto {
+public class ParkingLotResponseOldDto {
     private int parkingLotId;
     private String name;
     private String address;
@@ -34,15 +34,15 @@ public class ParkingLotResponseDto {
         parkingLot.setLongitude(longitude);
         parkingLot.setTotalSpace(Math.toIntExact(totalSpace));
         parkingLot.setRemainingSpace(Math.toIntExact(remainingSpace));
-        parkingLot.setOpenTime(openTime);
+//        parkingLot.setOpenTime(openTime);
         parkingLot.setStatus(status);
         parkingLot.setFreeInformation(freeInformation);
 
         return parkingLot;
     }
 
-    public static ParkingLotResponseDto of(ParkingLot parkingLot) {
-        return ParkingLotResponseDto.builder()
+    public static ParkingLotResponseOldDto of(ParkingLot parkingLot) {
+        return ParkingLotResponseOldDto.builder()
                 .parkingLotId(Math.toIntExact(parkingLot.getParkingLotId()))
                 .name(parkingLot.getName())
                 .address(parkingLot.getAddress())
@@ -50,7 +50,7 @@ public class ParkingLotResponseDto {
                 .longitude(parkingLot.getLongitude())
                 .totalSpace(parkingLot.getTotalSpace())
                 .remainingSpace(parkingLot.getRemainingSpace())
-                .openTime(parkingLot.getOpenTime())
+//                .openTime(parkingLot.getOpenTime())
                 .status(parkingLot.getStatus())
                 .freeInformation(parkingLot.getFreeInformation())
                 .imageUrl(parkingLot.getImageUrl())

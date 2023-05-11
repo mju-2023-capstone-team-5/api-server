@@ -1,14 +1,13 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -47,10 +46,19 @@ public class ParkingLot {
     @Column(name = "remaining_space")
     private Integer remainingSpace;
 
-    @Column(name = "open_time")
-    private LocalDateTime openTime;
+    @Column(name = "owner_id")
+    private Integer ownerId;
 
-    public void updateAllInfoSelf(ParkingLotRequestDto requestDto) {
+    @Lob
+    @Column(name = "car_type", columnDefinition = "text")
+    private String carType;
+
+    @Lob
+    @Column(name = "available_day", columnDefinition = "text")
+    private String availableDay;
+
+    public void updateAllInfoSelf(ParkingLotRequestOldDto requestDto) {
+
         this.setName(requestDto.getName());
         this.setAddress(requestDto.getAddress());
         this.setLatitude(requestDto.getLatitude());
@@ -58,8 +66,20 @@ public class ParkingLot {
         this.setTotalSpace(requestDto.getTotalSpace());
         this.setRemainingSpace(requestDto.getRemainingSpace());
         this.setStatus(requestDto.getStatus());
-        this.setOpenTime(requestDto.getOpenTime());
         this.setFreeInformation(requestDto.getFreeInformation());
+    }
+
+    public void updateAllInfoSelf(ParkingLot parkingLot) {
+        this.setName(parkingLot.getName());
+        this.setAddress(parkingLot.getAddress());
+        this.setLatitude(parkingLot.getLatitude());
+        this.setLongitude(parkingLot.getLongitude());
+        this.setTotalSpace(parkingLot.getTotalSpace());
+        this.setRemainingSpace(parkingLot.getRemainingSpace());
+        this.setFreeInformation(parkingLot.getFreeInformation());
+        this.setCarType(parkingLot.getCarType());
+        this.setAvailableDay(parkingLot.getAvailableDay());
+        this.setOwnerId(parkingLot.getOwnerId());
     }
 
     public void updateStatusToParkingAvailableSelf() {
