@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
@@ -43,7 +44,7 @@ public class ParkingLotService {
     }
 
     @Transactional(readOnly = true)
-    public ParkingLotDto getParkingLotInfo(Long id) {
+    public ParkingLotResponseDto getParkingLotInfo(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
@@ -51,11 +52,11 @@ public class ParkingLotService {
         List<ParkingAvailableTime> availableTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
         List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
 
-        return ParkingLotDto.of(found, owner, availableTimeList, priceList);
+        return ParkingLotResponseDto.of(ParkingLotDto.of(found, owner, availableTimeList, priceList));
     }
 
     @Transactional(readOnly = true)
-    public List<ParkingLotDto> getParkingLotsInRectangle(BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
+    public List<ParkingLotResponseDto> getParkingLotsInRectangle(BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
         List<ParkingLot> all = parkingLotRepository.findAll();
 
         List<ParkingLot> found = all.stream()
@@ -64,7 +65,7 @@ public class ParkingLotService {
                 })
                 .collect(Collectors.toList());
 
-        List<ParkingLotDto> resultDtos = new ArrayList<>();
+        List<ParkingLotResponseDto> resultDtos = new ArrayList<>();
 
         found.forEach(parkingLot -> {
             resultDtos.add(getParkingLotInfo(parkingLot.getParkingLotId()));
@@ -75,7 +76,7 @@ public class ParkingLotService {
 
     // 주차장 생성
     @Transactional
-    public ParkingLotDto createParkingLot(ParkingLotDto requestDto) {
+    public ParkingLotResponseDto createParkingLot(ParkingLotDto requestDto) {
 
         User ownerUser = userRepository.findById(Long.valueOf(requestDto.getOwnerId()))
                 .orElseThrow(() -> new EntityNotFoundException("주차장 주인 사용자가 존재하지 않습니다."));
@@ -114,7 +115,7 @@ public class ParkingLotService {
         });
         availableTimeRepository.saveAll(availableTimeList);
 
-        return requestDto;
+        return getParkingLotInfo(saved.getParkingLotId());
     }
 
     // 주차장 업데이트
