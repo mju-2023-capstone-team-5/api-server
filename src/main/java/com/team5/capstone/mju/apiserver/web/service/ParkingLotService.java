@@ -55,6 +55,22 @@ public class ParkingLotService {
     }
 
     @Transactional(readOnly = true)
+    public List<ParkingLotDto> getAllParkingLotsBiaOwner(Long id) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+
+        List<ParkingLotOwner> all = ownerRepository.findAllByOwnerId(Math.toIntExact(id));
+
+        List<ParkingLotDto> resultDtos = new ArrayList<>();
+
+        all.forEach(owner -> {
+            resultDtos.add(getParkingLotInfo(Long.valueOf(owner.getParkingLotId())));
+        });
+
+        return resultDtos;
+    }
+
+    @Transactional(readOnly = true)
     public List<ParkingLotDto> getParkingLotsInRectangle(BigDecimal x1, BigDecimal y1, BigDecimal x2, BigDecimal y2) {
         List<ParkingLot> all = parkingLotRepository.findAll();
 
