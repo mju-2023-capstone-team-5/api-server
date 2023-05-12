@@ -1,6 +1,8 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
+import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
+import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
@@ -24,6 +26,25 @@ public class UserService {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
         this.parkingLotService = parkingLotService;
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserInfo(Long id) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+
+        return UserResponseDto.of(found);
+    }
+
+    @Transactional(readOnly = true)
+    public OwnerResponseDto getParkingLotOwnerInfo(Long id) {
+        ParkingLotOwner found = ownerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        User foundUser = userRepository.findById(Long.valueOf(found.getOwnerId()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+
+        return OwnerResponseDto.of(found, foundUser);
+
     }
 
     // 사용자를 삭제하는 메소드

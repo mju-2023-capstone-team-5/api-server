@@ -1,6 +1,8 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
+import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +23,16 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "사용자 정보 반환 API", description = "사용자의 아이디를 받아 사용자의 정보를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 정보 조회에 성공")
+            }
+    )
+    @GetMapping("/users/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
+    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserInfo(id));
+    }
+
     @Operation(summary = "사용자가 등록한 주차장 정보 반환 API", description = "사용자의 아이디를 받아 등록한 주차장 정보 리스트를 반환하는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공")
@@ -29,6 +41,16 @@ public class UserController {
     @GetMapping("/users/{id}/parking-lots") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
     public ResponseEntity<List<ParkingLotDto>> getAllParkingLotBiaOwner(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getMyAllParkingLots(id));
+    }
+
+    @Operation(summary = "주차장 주인 정보 반환 API", description = "owner의 아이디를 받아 주차장 주인의 정보를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "owner 조회에 성공")
+            }
+    )
+    @GetMapping("/owners/{id}")
+    public ResponseEntity<OwnerResponseDto> getOwner(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getParkingLotOwnerInfo(id));
     }
 
     @Operation(summary = "사용자 회원탈퇴 후처리 API", description = "사용자의 카카오 회원탈퇴 후 사용자의 정보를 서비스 서버에서 삭제하는 API",
