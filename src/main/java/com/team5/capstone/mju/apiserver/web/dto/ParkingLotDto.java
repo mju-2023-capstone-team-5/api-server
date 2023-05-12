@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingAvailableTime;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
@@ -34,6 +35,12 @@ public class ParkingLotDto {
     private int totalSpace;
     private int remainingSpace;
     private int ownerId;
+
+    @JsonIgnore
+    private String imageUrl;
+
+    @JsonIgnore
+    private Integer id;
 
     @JsonProperty(value = "type")
     private String[] type;
@@ -159,12 +166,14 @@ public class ParkingLotDto {
         });
 
         return ParkingLotDto.builder()
+                .id(Math.toIntExact(parkingLot.getParkingLotId()))
                 .name(parkingLot.getName())
                 .address(parkingLot.getAddress())
                 .freeInformation(parkingLot.getFreeInformation())
                 .latitude(parkingLot.getLatitude())
                 .longitude(parkingLot.getLongitude())
                 .totalSpace(parkingLot.getTotalSpace())
+                .imageUrl(parkingLot.getImageUrl())
                 .remainingSpace(parkingLot.getRemainingSpace())
                 .ownerId(owner.getOwnerId())
                 .phoneNumber(owner.getInquiryPhoneNumber())

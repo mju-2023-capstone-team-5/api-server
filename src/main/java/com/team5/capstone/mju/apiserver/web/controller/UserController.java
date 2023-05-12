@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +40,7 @@ public class UserController {
             }
     )
     @GetMapping("/users/{id}/parking-lots") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
-    public ResponseEntity<List<ParkingLotDto>> getAllParkingLotBiaOwner(@PathVariable Long id) {
+    public ResponseEntity<List<ParkingLotResponseDto>> getAllParkingLotBiaOwner(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getMyAllParkingLots(id));
     }
 

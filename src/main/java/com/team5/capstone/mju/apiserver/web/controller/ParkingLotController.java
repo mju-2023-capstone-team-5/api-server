@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.service.AmazonS3Service;
 import com.team5.capstone.mju.apiserver.web.service.ParkingLotService;
@@ -43,7 +44,7 @@ public class ParkingLotController {
             }
     )
     @GetMapping("/parking-lots/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
-    public ResponseEntity<ParkingLotDto> getParkingLot(@PathVariable("id") Long id) { // url path에 있는 {id}와 변수를 매핑
+    public ResponseEntity<ParkingLotResponseDto> getParkingLot(@PathVariable("id") Long id) { // url path에 있는 {id}와 변수를 매핑
         // 서비스를 호출하여 얻어온 결과값을 반환. 반환 시 json 구조의 String으로 스프링이 해석하여 API 요청에 반환해줌
         return ResponseEntity.ok(parkingLotService.getParkingLotInfo(id));
     }
@@ -60,7 +61,7 @@ public class ParkingLotController {
             }
     )
     @GetMapping("/parking-lots/rectangle")
-    public ResponseEntity<List<ParkingLotDto>> getParkingLotsInDisplay(
+    public ResponseEntity<List<ParkingLotResponseDto>> getParkingLotsInDisplay(
             @RequestParam BigDecimal x1, // 왼쪽 위 위도
             @RequestParam BigDecimal y1, // 왼쪽 위 경도
             @RequestParam BigDecimal x2, // 오른쪽 아래 위도
@@ -75,9 +76,9 @@ public class ParkingLotController {
             }
     )
     @PostMapping("/parking-lots")
-    public ResponseEntity<ParkingLotDto> createParkingLot(@RequestBody ParkingLotDto requestDto) {
+    public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotDto requestDto) {
         log.info(requestDto.toString());
-        ParkingLotDto responseDto = parkingLotService.createParkingLot(requestDto);
+        ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -89,7 +90,7 @@ public class ParkingLotController {
     )
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotInfoImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile file) {
-        ParkingLotDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
+        ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
         String url = amazonS3Service.uploadImage("parking-lots/" + id + "/", "info", file);
         parkingLotService.addImageUrl(id, url);
         return ResponseEntity.ok("upload success");
@@ -103,7 +104,7 @@ public class ParkingLotController {
     )
     @PostMapping(value = "/parking-lots/{id}/images/permit-request", consumes = {"multipart/form-data"})
     public ResponseEntity<String> uploadParkingLotPermitRequestImage(@PathVariable Long id, @RequestParam(value = "file", required = false) MultipartFile[] files) {
-        ParkingLotDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
+        ParkingLotResponseDto parkingLotInfo = parkingLotService.getParkingLotInfo(id);
         amazonS3Service.uploadImages("parking-lots/" + id + "/permit-req/", "request", files);
         return ResponseEntity.ok("upload success");
     }

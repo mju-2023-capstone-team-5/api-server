@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
+import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.User;
@@ -65,13 +66,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<ParkingLotDto> getMyAllParkingLots(Long id) {
+    public List<ParkingLotResponseDto> getMyAllParkingLots(Long id) {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
 
         List<ParkingLotOwner> all = ownerRepository.findAllByOwnerId(Math.toIntExact(id));
 
-        List<ParkingLotDto> resultDtos = new ArrayList<>();
+        List<ParkingLotResponseDto> resultDtos = new ArrayList<>();
 
         all.forEach(owner -> {
             resultDtos.add(parkingLotService.getParkingLotInfo(Long.valueOf(owner.getParkingLotId())));
