@@ -48,17 +48,6 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getParkingLotInfo(id));
     }
 
-    @Operation(summary = "사용자가 등록한 주차장 정보 반환 API", description = "사용자의 아이디를 받아 등록한 주차장 정보 리스트를 반환하는 API",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공")
-            }
-    )
-    @GetMapping("/users/{id}/parking-lots") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
-    public ResponseEntity<List<ParkingLotDto>> getAllParkingLotBiaOwner(@PathVariable Long id) {
-        return ResponseEntity.ok(parkingLotService.getAllParkingLotsBiaOwner(id));
-    }
-
-
     @Operation(summary = "주차장 정보 반환 API", description = "왼쪽 위, 오른쪽 아래 사각형의 범위를 받아 주차장들의 정보를 반환하는 API",
             parameters = {
                     @Parameter(name = "x1", description = "왼쪽 위 위도"),
