@@ -141,9 +141,4 @@ public class ParkingLotController {
         parkingLotService.deleteParkingLot(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/parking-lots/test")
-    public void test(@RequestBody ParkingLotDto requestDto) {
-        return;
-    }
 }
