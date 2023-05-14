@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.team5.capstone.mju.apiserver.web.entity.History;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.vo.ReservationInfo;
 import lombok.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,14 +30,22 @@ public class ReservationRequestDto {
     @JsonProperty(value = "hourlyReservation")
     private ReservationInfo hourly;
 
-    public Reservation toEntity(){
+    public Reservation toEntity() throws EntityNotFoundException {
         Reservation reservation = new Reservation();
         reservation.setUserId(userId);
         reservation.setParkingLotId(parkingLotId);
-//        reservation.setStartTime(startTime);
-//        reservation.setEndTime(endTime);
-//        reservation.setDateReserved(dateReserved);
-//        reservation.setStatus(status);
+        reservation.setPrice(price);
+        if (monthly == null && hourly == null) throw new EntityNotFoundException("예약 관련 시간 정보가 존재하지 않습니다");
+        else if (monthly != null) {
+            reservation.setDateType(ParkingLotPriceType.MONTH.getType());
+            reservation.setDate(monthly.getDate());
+            reservation.setDuration(monthly.getDuration());
+        }
+        else if (hourly != null) {
+            reservation.setDateType(ParkingLotPriceType.HOUR.getType());
+            reservation.setDate(hourly.getDate());
+            reservation.setDuration(hourly.getDuration());
+        }
         return reservation;
     }
 }
