@@ -26,6 +26,9 @@ public class Reservation {
     @Column(name = "duration")
     private Integer duration;
 
+    @Column(name = "price")
+    private Integer price;
+
     @Column(name = "date")
     private LocalDateTime date;
 
