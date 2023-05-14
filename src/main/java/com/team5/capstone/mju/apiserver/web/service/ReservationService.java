@@ -61,6 +61,8 @@ public class ReservationService {
     // 예약정보 삭제
     @Transactional
     public void deleteReservation(Long id) {
-        reservationRepository.deleteById(id);
+        Reservation found = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("예약내역을 찾을 수 없습니다"));
+        reservationRepository.delete(found);
     }
 }
