@@ -1,8 +1,11 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.team5.capstone.mju.apiserver.web.entity.History;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
+import com.team5.capstone.mju.apiserver.web.vo.ReservationInfo;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -15,36 +18,40 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationResponseDto {
 
-    private  int reservationId;
+    private int reservationId;
     private int userId;
     private int parkingLotId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private LocalDateTime dateReserved;
-    private String status;
+    private int price;
 
-    public Reservation ToEntity(){
+    @JsonProperty(value = "monthlyReservation")
+    private ReservationInfo monthly;
 
-        Reservation reservation = new Reservation();
-        reservation.setReservationId((long) reservationId);
-        reservation.setUserId(userId);
-        reservation.setParkingLotId(parkingLotId);
-        reservation.setStartTime(startTime);
-        reservation.setEndTime(endTime);
-        reservation.setDateReserved(dateReserved);
-        reservation.setStatus(status);
+    @JsonProperty(value = "hourlyReservation")
+    private ReservationInfo hourly;
 
-        return reservation;
-    }
     public static ReservationResponseDto of(Reservation reservation) {
+        ReservationInfo hourly = null;
+        ReservationInfo monthly = null;
+
+        if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
+            hourly = new ReservationInfo();
+            hourly.setDate(reservation.getDate());
+            hourly.setDuration(reservation.getDuration());
+        }
+        else if (reservation.getDateType().equals(ParkingLotPriceType.MONTH.getType())) {
+            monthly = new ReservationInfo();
+            monthly.setDate(reservation.getDate());
+            monthly.setDuration(reservation.getDuration());
+        }
+
+
         return ReservationResponseDto.builder()
                 .reservationId(Math.toIntExact(reservation.getReservationId()))
                 .userId(reservation.getUserId())
                 .parkingLotId(reservation.getParkingLotId())
-                .startTime(reservation.getStartTime())
-                .endTime(reservation.getEndTime())
-                .dateReserved(reservation.getDateReserved())
-                .status(reservation.getStatus())
+                .price(reservation.getPrice())
+                .hourly(hourly)
+                .monthly(monthly)
                 .build();
     }
 

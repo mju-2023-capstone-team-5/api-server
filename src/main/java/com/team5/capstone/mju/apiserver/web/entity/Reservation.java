@@ -1,6 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,24 +24,33 @@ public class Reservation {
     @Column(name = "parking_lot_id")
     private Integer parkingLotId;
 
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
+    @Column(name = "duration")
+    private Integer duration;
 
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    @Column(name = "price")
+    private Integer price;
 
-    @Column(name = "date_reserved")
-    private LocalDateTime dateReserved;
+    @Column(name = "date")
+    private LocalDateTime date;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "date_type")
+    private String dateType;
 
-    public void updateAllInfoSelf(ReservationRequestDto requestDto) {
+
+    public void updateAllInfoSelf(ReservationRequestDto requestDto) throws EntityNotFoundException {
         this.setUserId(requestDto.getUserId());
         this.setParkingLotId(requestDto.getParkingLotId());
-        this.setStartTime(requestDto.getStartTime());
-        this.setEndTime(requestDto.getEndTime());
-        this.setDateReserved(requestDto.getDateReserved());
-        this.setStatus(requestDto.getStatus());
+        if (requestDto.getHourly() == null && requestDto.getMonthly() == null) throw new EntityNotFoundException("예약 관련 시간 정보가 존재하지 않습니다");
+        else if (requestDto.getMonthly() != null) {
+            this.setDateType(ParkingLotPriceType.MONTH.getType());
+            this.setDate(requestDto.getMonthly().getDate());
+            this.setDuration(requestDto.getMonthly().getDuration());
+        }
+        else if (requestDto.getHourly() != null) {
+            this.setDateType(ParkingLotPriceType.HOUR.getType());
+            this.setDate(requestDto.getHourly().getDate());
+            this.setDuration(requestDto.getHourly().getDuration());
+        }
+        this.setPrice(requestDto.getPrice());
     }
 }
