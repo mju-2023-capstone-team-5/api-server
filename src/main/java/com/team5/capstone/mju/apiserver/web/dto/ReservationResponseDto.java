@@ -29,10 +29,10 @@ public class ReservationResponseDto {
         reservation.setReservationId((long) reservationId);
         reservation.setUserId(userId);
         reservation.setParkingLotId(parkingLotId);
-        reservation.setStartTime(startTime);
-        reservation.setEndTime(endTime);
-        reservation.setDateReserved(dateReserved);
-        reservation.setStatus(status);
+//        reservation.setStartTime(startTime);
+//        reservation.setEndTime(endTime);
+//        reservation.setDateReserved(dateReserved);
+//        reservation.setStatus(status);
 
         return reservation;
     }
@@ -41,10 +41,10 @@ public class ReservationResponseDto {
                 .reservationId(Math.toIntExact(reservation.getReservationId()))
                 .userId(reservation.getUserId())
                 .parkingLotId(reservation.getParkingLotId())
-                .startTime(reservation.getStartTime())
-                .endTime(reservation.getEndTime())
-                .dateReserved(reservation.getDateReserved())
-                .status(reservation.getStatus())
+//                .startTime(reservation.getStartTime())
+//                .endTime(reservation.getEndTime())
+//                .dateReserved(reservation.getDateReserved())
+//                .status(reservation.getStatus())
                 .build();
     }
 

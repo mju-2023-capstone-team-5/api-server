@@ -26,10 +26,10 @@ public class ReservationRequestDto {
         Reservation reservation = new Reservation();
         reservation.setUserId(userId);
         reservation.setParkingLotId(parkingLotId);
-        reservation.setStartTime(startTime);
-        reservation.setEndTime(endTime);
-        reservation.setDateReserved(dateReserved);
-        reservation.setStatus(status);
+//        reservation.setStartTime(startTime);
+//        reservation.setEndTime(endTime);
+//        reservation.setDateReserved(dateReserved);
+//        reservation.setStatus(status);
         return reservation;
     }
 }

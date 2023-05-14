@@ -23,24 +23,22 @@ public class Reservation {
     @Column(name = "parking_lot_id")
     private Integer parkingLotId;
 
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
+    @Column(name = "duration")
+    private Integer duration;
 
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    @Column(name = "date")
+    private LocalDateTime date;
 
-    @Column(name = "date_reserved")
-    private LocalDateTime dateReserved;
+    @Column(name = "date_type")
+    private String dateType;
 
-    @Column(name = "status")
-    private String status;
 
     public void updateAllInfoSelf(ReservationRequestDto requestDto) {
         this.setUserId(requestDto.getUserId());
         this.setParkingLotId(requestDto.getParkingLotId());
-        this.setStartTime(requestDto.getStartTime());
-        this.setEndTime(requestDto.getEndTime());
-        this.setDateReserved(requestDto.getDateReserved());
-        this.setStatus(requestDto.getStatus());
+//        this.setStartTime(requestDto.getStartTime());
+//        this.setEndTime(requestDto.getEndTime());
+//        this.setDateReserved(requestDto.getDateReserved());
+//        this.setStatus(requestDto.getStatus());
     }
 }
