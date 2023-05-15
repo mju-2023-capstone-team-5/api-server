@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class UserPayReceipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_pay_receipt_id", nullable = false)
+    @Column(name = "user_pay_receipt_id", nullable = false, columnDefinition = "int")
     private Long userPayReceiptId;
 
     @Column(name = "user_id")

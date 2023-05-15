@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class UserPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_point_id", nullable = false)
+    @Column(name = "user_point_id", nullable = false, columnDefinition = "int")
     private Long userPointId;
 
     @Column(name = "user_id")
