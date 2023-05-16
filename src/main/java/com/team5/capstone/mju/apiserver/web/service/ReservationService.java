@@ -2,9 +2,14 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.UserPointReceiptResponseDto;
+import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
+import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +23,18 @@ public class ReservationService {
     // Repository 객체
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
+    private final UserPayReceiptRepository userPayReceiptRepository;
     private final ParkingLotRepository parkingLotRepository;
 
+    private final UserService userService;
+
     @Autowired // 생성자를 통한 의존성 주입
-    public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, ParkingLotRepository parkingLotRepository) {
+    public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, UserPayReceiptRepository userPayReceiptRepository, ParkingLotRepository parkingLotRepository, UserService userService) {
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
+        this.userPayReceiptRepository = userPayReceiptRepository;
         this.parkingLotRepository = parkingLotRepository;
+        this.userService = userService;
     }
 
     @Transactional(readOnly = true)
@@ -38,12 +48,19 @@ public class ReservationService {
     // 예약생성
     @Transactional
     public ReservationResponseDto createReservation(ReservationRequestDto requestDto) {
-        parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
+        ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
                 .orElseThrow(() -> new EntityNotFoundException("주차장이 존재하지 않습니다."));
-        userRepository.findById(Long.valueOf(requestDto.getUserId()))
+        User foundUser = userRepository.findById(Long.valueOf(requestDto.getUserId()))
                 .orElseThrow(() -> new EntityNotFoundException("사용자가 존재하지 않습니다"));
+
+        UserPointReceiptResponseDto usedDto = userService.usePoint(foundUser.getUserid(), Long.valueOf(requestDto.getPrice()));
+        UserPointReceiptResponseDto earnedDto = userService.earnPointToOwner(Long.valueOf(foundParkingLot.getOwnerId()), Long.valueOf(requestDto.getPrice()));
+
+        Reservation reservation = requestDto.toEntity();
+        reservation.writeReceipts(usedDto, earnedDto);
+
         // Reservation 엔티티를 데이터베이스에 저장
-        Reservation savedReservation = reservationRepository.save(requestDto.toEntity());
+        Reservation savedReservation = reservationRepository.save(reservation);
         return ReservationResponseDto.of(savedReservation);
     }
 
@@ -63,6 +80,20 @@ public class ReservationService {
     public void deleteReservation(Long id) {
         Reservation found = reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("예약내역을 찾을 수 없습니다"));
+
+        String[] ids = found.getPayReceiptIds().split(",");
+        Long userReceiptId = Long.valueOf(ids[0]);
+        Long ownerReceiptId = Long.valueOf(ids[1]);
+
+        UserPayReceipt userPaidReceipt = userPayReceiptRepository.findById(userReceiptId).get();
+        UserPayReceipt ownerPaidReceipt = userPayReceiptRepository.findById(ownerReceiptId).get();
+
+        // 사용자가 사용했던 포인트 복구
+        userService.cancelUsePoint(Long.valueOf(userPaidReceipt.getUserId()), userPaidReceipt.getAmount());
+
+        // 판매자가 얻은 포인트 보구
+        userService.cancelEarnPoint(Long.valueOf(ownerPaidReceipt.getUserId()), ownerPaidReceipt.getAmount());
+
         reservationRepository.delete(found);
     }
 }
