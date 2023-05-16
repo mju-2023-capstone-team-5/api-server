@@ -21,4 +21,12 @@ public class UserPoint {
     @Column(name = "points")
     private Long points;
 
+    public void use(Long amount) {
+        this.points -= amount;
+    }
+
+    public void earn(Long amount) {
+        this.points += amount;
+    }
+
 }

@@ -86,13 +86,25 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto usePoint(Long id) {
-        return null;
+    public UserResponseDto usePoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.use(amount);
+        return UserResponseDto.of(found, foundPoint);
     }
 
     @Transactional
-    public UserResponseDto earnPoint(Long id) {
-        return null;
+    public UserResponseDto earnPoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.earn(amount);
+        return UserResponseDto.of(found, foundPoint);
     }
 
     @Transactional
