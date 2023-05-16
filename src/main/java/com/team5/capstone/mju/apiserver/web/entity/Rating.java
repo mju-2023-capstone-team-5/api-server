@@ -15,7 +15,7 @@ public class Rating {
     private Integer parkingLotId;
 
     @Column(name = "rating_sum")
-    private float ratingSum;
+    private Integer ratingSum;
 
     @Column(name = "rating_num")
     private Integer ratingNum;
@@ -23,11 +23,4 @@ public class Rating {
     @Column(name = "rating_avg")
     private float ratingAvg;
 
-    public Rating(Integer parkingLotId, Float rating, int i, Float rating1) {
-
-    }
-
-    public Rating() {
-
-    }
 }
