@@ -91,7 +91,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto usePoint(Long id, Long amount) {
+    public UserPointReceiptResponseDto usePoint(Long id, Long amount) {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
@@ -99,12 +99,12 @@ public class UserService {
 
         foundPoint.use(amount);
 
-        writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_USED.getType());
-        return UserResponseDto.of(found, foundPoint);
+        UserPayReceipt savedReceipt = writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_USED.getType());
+        return UserPointReceiptResponseDto.of(found, foundPoint, savedReceipt);
     }
 
     @Transactional
-    public UserResponseDto earnPoint(Long id, Long amount) {
+    public UserPointReceiptResponseDto earnPoint(Long id, Long amount) {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
@@ -112,9 +112,39 @@ public class UserService {
 
         foundPoint.earn(amount);
 
-        writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_EARN.getType());
-        return UserResponseDto.of(found, foundPoint);
+        UserPayReceipt savedReceipt = writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_EARN.getType());
+        return UserPointReceiptResponseDto.of(found, foundPoint, savedReceipt);
     }
+
+    @Transactional
+    public UserPointReceiptResponseDto earnPointToOwner(Long id, Long amount) {
+        ParkingLotOwner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 주차장 주인 데이터가 없습니다"));
+
+        return earnPoint(Long.valueOf(owner.getOwnerId()), amount);
+    }
+
+    @Transactional
+    public void cancelEarnPoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.use(amount);
+    }
+
+    @Transactional
+    public void cancelUsePoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.earn(amount);
+    }
+
+
 
     @Transactional
     public UserPointResponseDto createAndInitPoint(Long id) {
@@ -131,13 +161,15 @@ public class UserService {
     }
 
     @Transactional
-    public void writeUserPayReceipt(Long userId, Long amount, String paymentType) {
+    public UserPayReceipt writeUserPayReceipt(Long userId, Long amount, String paymentType) {
         UserPayReceipt receipt = new UserPayReceipt();
         receipt.setUserId(Math.toIntExact(userId));
         receipt.setAmount(amount);
         receipt.setPaymentType(paymentType);
 
-        userPayReceiptRepository.save(receipt);
+        UserPayReceipt saved = userPayReceiptRepository.save(receipt);
+
+        return saved;
     }
 
 }
