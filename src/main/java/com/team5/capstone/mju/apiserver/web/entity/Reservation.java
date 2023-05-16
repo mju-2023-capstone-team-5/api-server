@@ -1,6 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.UserPointReceiptResponseDto;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,10 @@ public class Reservation {
     @Column(name = "date_type")
     private String dateType;
 
+    @Lob
+    @Column(name = "pay_receipt_ids", columnDefinition = "TEXT")
+    private String payReceiptIds;
+
 
     public void updateAllInfoSelf(ReservationRequestDto requestDto) throws EntityNotFoundException {
         this.setUserId(requestDto.getUserId());
@@ -52,5 +57,9 @@ public class Reservation {
             this.setDuration(requestDto.getHourly().getDuration());
         }
         this.setPrice(requestDto.getPrice());
+    }
+
+    public void writeReceipts(UserPointReceiptResponseDto userReceipt, UserPointReceiptResponseDto ownerReceipt) {
+        this.payReceiptIds = userReceipt.getReceiptId() + "," + ownerReceipt.getReceiptId();
     }
 }
