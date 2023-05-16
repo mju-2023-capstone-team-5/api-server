@@ -36,7 +36,9 @@ public class UserService {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
 
-        return UserResponseDto.of(found);
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+        return UserResponseDto.of(found, foundPoint);
     }
 
     @Transactional(readOnly = true)

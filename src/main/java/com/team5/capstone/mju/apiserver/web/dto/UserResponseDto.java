@@ -1,6 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.dto;
 
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +18,9 @@ public class UserResponseDto {
     private String address;
     private String carNumber;
     private LocalDateTime dateJoined;
+    private Long points;
 
-    public static UserResponseDto of(User user) {
+    public static UserResponseDto of(User user, UserPoint userPoint) {
         return UserResponseDto.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -26,6 +28,7 @@ public class UserResponseDto {
                 .address(user.getAddress())
                 .carNumber(user.getCarNumber())
                 .dateJoined(user.getDateJoined())
+                .points(userPoint.getPoints())
                 .build();
     }
 }
