@@ -1,12 +1,15 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
-import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.*;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
+import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
+import com.team5.capstone.mju.apiserver.web.enums.UserDefaultPoint;
+import com.team5.capstone.mju.apiserver.web.enums.UserPayReceiptType;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserPointRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +23,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ParkingLotOwnerRepository ownerRepository;
+    private final UserPointRepository userPointRepository;
+    private final UserPayReceiptRepository userPayReceiptRepository;
 
     private final ParkingLotService parkingLotService;
 
-    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, ParkingLotService parkingLotService) {
+    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, UserPayReceiptRepository userPayReceiptRepository, ParkingLotService parkingLotService) {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
+        this.userPointRepository = userPointRepository;
+        this.userPayReceiptRepository = userPayReceiptRepository;
         this.parkingLotService = parkingLotService;
     }
 
@@ -34,7 +41,9 @@ public class UserService {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
 
-        return UserResponseDto.of(found);
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+        return UserResponseDto.of(found, foundPoint);
     }
 
     @Transactional(readOnly = true)
@@ -80,4 +89,87 @@ public class UserService {
 
         return resultDtos;
     }
+
+    @Transactional
+    public UserPointReceiptResponseDto usePoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.use(amount);
+
+        UserPayReceipt savedReceipt = writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_USED.getType());
+        return UserPointReceiptResponseDto.of(found, foundPoint, savedReceipt);
+    }
+
+    @Transactional
+    public UserPointReceiptResponseDto earnPoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.earn(amount);
+
+        UserPayReceipt savedReceipt = writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_EARN.getType());
+        return UserPointReceiptResponseDto.of(found, foundPoint, savedReceipt);
+    }
+
+    @Transactional
+    public UserPointReceiptResponseDto earnPointToOwner(Long id, Long amount) {
+        ParkingLotOwner owner = ownerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 주차장 주인 데이터가 없습니다"));
+
+        return earnPoint(Long.valueOf(owner.getOwnerId()), amount);
+    }
+
+    @Transactional
+    public void cancelEarnPoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.use(amount);
+    }
+
+    @Transactional
+    public void cancelUsePoint(Long id, Long amount) {
+        User found = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+        UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+
+        foundPoint.earn(amount);
+    }
+
+
+
+    @Transactional
+    public UserPointResponseDto createAndInitPoint(Long id) {
+        userPointRepository.findByUserId(Math.toIntExact(id))
+                .ifPresent((point) -> {
+                    throw new RuntimeException("사용자에 대한 포인트가 이미 존재합니다.");
+                });
+        UserPoint userPoint = new UserPoint();
+        userPoint.setPoints(UserDefaultPoint.DEMO.getAmount());
+        userPoint.setUserId(Math.toIntExact(id));
+
+        UserPoint saved = userPointRepository.save(userPoint);
+        return UserPointResponseDto.of(saved);
+    }
+
+    @Transactional
+    public UserPayReceipt writeUserPayReceipt(Long userId, Long amount, String paymentType) {
+        UserPayReceipt receipt = new UserPayReceipt();
+        receipt.setUserId(Math.toIntExact(userId));
+        receipt.setAmount(amount);
+        receipt.setPaymentType(paymentType);
+
+        UserPayReceipt saved = userPayReceiptRepository.save(receipt);
+
+        return saved;
+    }
+
 }
