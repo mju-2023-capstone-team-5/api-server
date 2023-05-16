@@ -1,7 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team5.capstone.mju.apiserver.web.dto.LoginRequestDto;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,10 +38,14 @@ public class LoginService {
     @Autowired
     private JwtUtil jwtUtil;
 
+
     private final UserRepository userRepository;
 
-    public LoginService(UserRepository userRepository) {
+    private final UserService userService;
+
+    public LoginService(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public boolean isValidateToken(LoginRequestDto loginRequestDto) {
@@ -109,6 +110,7 @@ public class LoginService {
                 .build();
 
         User savedUser = userRepository.save(newUser);
+        userService.createAndInitPoint(savedUser.getUserid());
         return new NewOrFoundUser(savedUser.getUserid(), true);
     }
 

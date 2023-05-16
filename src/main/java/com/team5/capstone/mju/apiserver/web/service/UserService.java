@@ -1,12 +1,12 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
-import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.*;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
+import com.team5.capstone.mju.apiserver.web.enums.UserDefaultPoint;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserPointRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +20,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ParkingLotOwnerRepository ownerRepository;
+    private final UserPointRepository userPointRepository;
 
     private final ParkingLotService parkingLotService;
 
-    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, ParkingLotService parkingLotService) {
+    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, ParkingLotService parkingLotService) {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
+        this.userPointRepository = userPointRepository;
         this.parkingLotService = parkingLotService;
     }
 
@@ -80,4 +82,29 @@ public class UserService {
 
         return resultDtos;
     }
+
+    @Transactional
+    public UserResponseDto usePoint(Long id) {
+        return null;
+    }
+
+    @Transactional
+    public UserResponseDto earnPoint(Long id) {
+        return null;
+    }
+
+    @Transactional
+    public UserPointResponseDto createAndInitPoint(Long id) {
+        userPointRepository.findByUserId(Math.toIntExact(id))
+                .ifPresent((point) -> {
+                    throw new RuntimeException("사용자에 대한 포인트가 이미 존재합니다.");
+                });
+        UserPoint userPoint = new UserPoint();
+        userPoint.setPoints(UserDefaultPoint.DEMO.getAmount());
+        userPoint.setUserId(Math.toIntExact(id));
+
+        UserPoint saved = userPointRepository.save(userPoint);
+        return UserPointResponseDto.of(saved);
+    }
+
 }
