@@ -3,9 +3,12 @@ package com.team5.capstone.mju.apiserver.web.service;
 import com.team5.capstone.mju.apiserver.web.dto.*;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
 import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
 import com.team5.capstone.mju.apiserver.web.enums.UserDefaultPoint;
+import com.team5.capstone.mju.apiserver.web.enums.UserPayReceiptType;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPointRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -21,13 +24,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final ParkingLotOwnerRepository ownerRepository;
     private final UserPointRepository userPointRepository;
+    private final UserPayReceiptRepository userPayReceiptRepository;
 
     private final ParkingLotService parkingLotService;
 
-    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, ParkingLotService parkingLotService) {
+    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, UserPayReceiptRepository userPayReceiptRepository, ParkingLotService parkingLotService) {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
         this.userPointRepository = userPointRepository;
+        this.userPayReceiptRepository = userPayReceiptRepository;
         this.parkingLotService = parkingLotService;
     }
 
@@ -93,6 +98,8 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
 
         foundPoint.use(amount);
+
+        writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_USED.getType());
         return UserResponseDto.of(found, foundPoint);
     }
 
@@ -104,6 +111,8 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
 
         foundPoint.earn(amount);
+
+        writeUserPayReceipt(found.getUserid(), amount, UserPayReceiptType.POINT_EARN.getType());
         return UserResponseDto.of(found, foundPoint);
     }
 
@@ -119,6 +128,16 @@ public class UserService {
 
         UserPoint saved = userPointRepository.save(userPoint);
         return UserPointResponseDto.of(saved);
+    }
+
+    @Transactional
+    public void writeUserPayReceipt(Long userId, Long amount, String paymentType) {
+        UserPayReceipt receipt = new UserPayReceipt();
+        receipt.setUserId(Math.toIntExact(userId));
+        receipt.setAmount(amount);
+        receipt.setPaymentType(paymentType);
+
+        userPayReceiptRepository.save(receipt);
     }
 
 }
