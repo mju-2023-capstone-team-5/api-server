@@ -59,12 +59,13 @@ public class CustomerSupportService {
     // QnA생성
     @Transactional
     public QnaResponseDto createQna(QnaRequestDto requestDto) {
-        // QnA 엔티티를 데이터베이스에 저장
-        Qna savedQna = qnaRepository.save(requestDto.toEntity());
-
         // 이메일 보내기
         User user = userRepository.findById((long) requestDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
+
+        // QnA 엔티티를 데이터베이스에 저장
+        Qna savedQna = qnaRepository.save(requestDto.toEntity());
+
         String userEmail = user.getEmail();
         String emailSubject = "QnA 등록 안내";
         String emailContent = "성공적으로 QnA를 등록하였습니다.";
