@@ -4,7 +4,11 @@ import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.GradeResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.Grade;
 import com.team5.capstone.mju.apiserver.web.exceptions.GradeNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.GradeRepository;
+import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +22,17 @@ public class GradeService {
 
     // Repository 객체
     private final GradeRepository gradeRepository;
+    private final UserRepository userRepository;
+    private final ParkingLotRepository parkingLotRepository;
 
 
     @Autowired // 생성자를 통한 의존성 주입
-    public GradeService(GradeRepository gradeRepository) {
+    public GradeService(GradeRepository gradeRepository,
+                        UserRepository userRepository,
+                        ParkingLotRepository parkingLotRepository) {
         this.gradeRepository = gradeRepository;
+        this.userRepository = userRepository;
+        this.parkingLotRepository = parkingLotRepository;
     }
 
     // 후기 요청(주차장 아이디)
@@ -42,6 +52,11 @@ public class GradeService {
     // 후기 생성
     @Transactional
     public GradeResponseDto createGrade(GradeRequestDto requestDto) {
+        userRepository.findById(Long.valueOf(requestDto.getUserId()))
+                .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
+        parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
+                .orElseThrow(() -> new ParkingLotNotFoundException(requestDto.getParkingLotId()));
+
         // Grade 엔티티를 데이터베이스에 저장
         Grade savedGrade = gradeRepository.save(requestDto.ToEntity());
         return GradeResponseDto.of(savedGrade);

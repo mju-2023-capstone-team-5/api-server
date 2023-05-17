@@ -27,7 +27,9 @@ public class LoginController {
 
     @Operation(summary = "로그인 API", description = "액세스 토큰을 받아 로그인을 진행하고 로그인 성공 정보를 반환하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "로그인에 성공")
+                    @ApiResponse(responseCode = "200", description = "로그인에 성공"),
+                    @ApiResponse(responseCode = "401", description = "토큰이 올바르지 않아 로그인에 실패"),
+                    @ApiResponse(responseCode = "404", description = "카카오에서 조회한 My Info 정보가 존재하지 않아 로그인에 실패")
             }
     )
     @PostMapping("/login/token")

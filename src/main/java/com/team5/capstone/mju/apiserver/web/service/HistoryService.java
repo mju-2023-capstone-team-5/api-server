@@ -4,7 +4,11 @@ import com.team5.capstone.mju.apiserver.web.dto.HistoryRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.HistoryResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.History;
 import com.team5.capstone.mju.apiserver.web.exceptions.HistoryNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.HistoryRepository;
+import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
+import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +20,16 @@ public class HistoryService {
 
     // Repository 객체
     private final HistoryRepository historyRepository;
+    private final UserRepository userRepository;
+    private final ParkingLotRepository parkingLotRepository;
 
     @Autowired // 생성자를 통한 의존성 주입
-    public HistoryService(HistoryRepository historyRepository) {
+    public HistoryService(HistoryRepository historyRepository,
+                          UserRepository userRepository,
+                          ParkingLotRepository parkingLotRepository) {
         this.historyRepository = historyRepository;
+        this.userRepository = userRepository;
+        this.parkingLotRepository = parkingLotRepository;
     }
 
     @Transactional
@@ -44,6 +54,11 @@ public class HistoryService {
     public HistoryResponseDto createHistory(HistoryRequestDto requestDto) {
 
         // History 엔티티를 데이터베이스에 저장
+        userRepository.findById(Long.valueOf(requestDto.getUserId()))
+                .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
+
+        parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
+                .orElseThrow(() -> new ParkingLotNotFoundException(requestDto.getUserId()));
 
         History savedHistory = historyRepository.save(requestDto.ToEntity());
 

@@ -40,7 +40,8 @@ public class ParkingLotController {
 
     @Operation(summary = "주차장 정보 반환 API", description = "주차장의 아이디를 받아 정보를 반환하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공")
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "주차장 정보나 주차장 주인에 대한 정보가 존재하지 않아 조회에 실패")
             }
     )
     @GetMapping("/parking-lots/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
@@ -72,7 +73,8 @@ public class ParkingLotController {
 
     @Operation(summary = "주차장 정보 생성 API", description = "주차장의 정보를 받아 새로운 주차장을 생성하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 주차장 생성에 성공")
+                    @ApiResponse(responseCode = "200", description = "새로운 주차장 생성에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자나 주차장 주인에 대한 정보가 존재하지 않아 생성에 실패")
             }
     )
     @PostMapping("/parking-lots")
@@ -85,7 +87,9 @@ public class ParkingLotController {
     // 주차장 정보 사진 업로드 url
     @Operation(summary = "주차장 정보 사진 업로드 API", description = "주차장의 사진을 받아 서버에 업로드하고 주차장 정보를 업데이트 하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장의 사진 업로드 및 url 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "주차장의 사진 업로드 및 url 업데이트에 성공"),
+                    @ApiResponse(responseCode = "400", description = "이미지 파일에 문제가 있거나 허용되지 않은 이미지 확장자를 사용하여 업로드 및 url 업데이트에 실패"),
+                    @ApiResponse(responseCode = "404", description = "주차장 정보가 존재하지 않아 업로드 및 url 업데이트에 실패")
             }
     )
     @PostMapping(value = "/parking-lots/{id}/images/info", consumes = {"multipart/form-data"})
@@ -99,7 +103,9 @@ public class ParkingLotController {
     // 주차장 허가 문서 업로드 url, 관리자에 의해 수동으로 검사되어 허가 처리되는 API
     @Operation(summary = "주차장 허가(수동) 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공")
+                    @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공"),
+                    @ApiResponse(responseCode = "400", description = "이미지 파일에 문제가 있거나 허용되지 않은 이미지 확장자를 사용하여 허가 문서의 사진 업로드에 실패"),
+                    @ApiResponse(responseCode = "404", description = "주차장 정보가 존재하지 않아 허가 문서의 사진 업로드에 실패")
             }
     )
     @PostMapping(value = "/parking-lots/{id}/images/permit-request", consumes = {"multipart/form-data"})
@@ -110,7 +116,7 @@ public class ParkingLotController {
     }
 
     // 주차장 허가 문서 업로드 API, OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API
-    @Operation(summary = "주차장 허가(자동) 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드 하고 OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API",
+    @Operation(hidden = true, summary = "주차장 허가(자동) 문서 사진 업로드 API", description = "주차장의 허가 문서 사진을 받아 서버에 업로드 하고 OpenAPI에 의해 자동으로 검사되어 허가 처리되는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "주차장 허가 문서의 사진 업로드에 성공 및 허가 처리 완료 됨")
             }
@@ -122,7 +128,8 @@ public class ParkingLotController {
 
     @Operation(summary = "주차장 정보 업데이트 API", description = "주차장의 정보를 받아 정보를 업데이트 하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장 정보 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 업데이트에 성공"),
+                    @ApiResponse(responseCode = "404", description = "주차장이나 주차장 주인에 대한 정보가 존재하지 않아 정보 업데이트에 실패"),
             }
     )
     @PatchMapping("/parking-lots/{id}")
@@ -134,7 +141,8 @@ public class ParkingLotController {
 
     @Operation(summary = "주차장 정보 삭제 API", description = "주차장의 아이디를 받아 주차장을 삭제하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "주차장 삭제에 성공")
+                    @ApiResponse(responseCode = "200", description = "주차장 삭제에 성공"),
+                    @ApiResponse(responseCode = "400", description = "주차장 정보가 존재하지 않아 삭제에 실패"),
             }
     )
     @DeleteMapping("/parking-lots/{id}")

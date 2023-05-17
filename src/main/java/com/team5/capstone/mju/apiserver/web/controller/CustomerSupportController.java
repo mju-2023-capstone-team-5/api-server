@@ -27,7 +27,8 @@ public class CustomerSupportController {
 
     @Operation(summary = "QnA 정보 반환 API", description = "유저 아이디를 받아 QnA 정보를 리스트로 반환하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "QnA 정보 조회에 성공")
+                    @ApiResponse(responseCode = "200", description = "QnA 정보 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "QnA 정보가 존재하지 않아 조회에 실패")
             }
     )
     @GetMapping("/qna/{id}")
@@ -37,7 +38,8 @@ public class CustomerSupportController {
 
     @Operation(summary = "QnA 정보 생성 API", description = "QnA 정보를 받아 새로운 예약을 생성하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 QnA 생성에 성공")
+                    @ApiResponse(responseCode = "200", description = "새로운 QnA 생성에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않아 새로운 QnA 실패")
             }
     )
     @PostMapping("/qna")
@@ -49,7 +51,8 @@ public class CustomerSupportController {
 
     @Operation(summary = "QnA 정보 업데이트 API", description = "QnA 정보를 받아 예약을 업데이트 하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "QnA 정보 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "QnA 정보 업데이트에 성공"),
+                    @ApiResponse(responseCode = "404", description = "QnA 정보가 존재하지 않아 업데이트에 실패")
             }
     )
     @PatchMapping("/qna/{id}")
@@ -61,7 +64,8 @@ public class CustomerSupportController {
 
     @Operation(summary = "QnA 정보 삭제 API", description = "QnA 아이디를 받아 예약을 삭제하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "QnA 삭제에 성공")
+                    @ApiResponse(responseCode = "200", description = "QnA 삭제에 성공"),
+                    @ApiResponse(responseCode = "404", description = "QnA 정보가 존재하지 않아 삭제에 실패")
             }
     )
     @DeleteMapping("/qna/{id}")
