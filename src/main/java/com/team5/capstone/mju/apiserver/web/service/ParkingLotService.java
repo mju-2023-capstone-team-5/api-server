@@ -33,14 +33,17 @@ public class ParkingLotService {
     private final ParkingPriceRepository priceRepository;
     private final ParkingLotOwnerRepository ownerRepository;
     private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
 
     @Autowired // 생성자를 통한 의존성 주입
-    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingAvailableTimeRepository availableTimeRepository, ParkingPriceRepository priceRepository, ParkingLotOwnerRepository ownerRepository, UserRepository userRepository) {
+    public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingAvailableTimeRepository availableTimeRepository, ParkingPriceRepository priceRepository, ParkingLotOwnerRepository ownerRepository, UserRepository userRepository,
+                             RatingRepository ratingRepository) {
         this.parkingLotRepository = parkingLotRepository;
         this.availableTimeRepository = availableTimeRepository;
         this.priceRepository = priceRepository;
         this.ownerRepository = ownerRepository;
         this.userRepository = userRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Transactional(readOnly = true)
@@ -49,10 +52,11 @@ public class ParkingLotService {
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
         ParkingLotOwner owner = ownerRepository.findByParkingLotId(Math.toIntExact(id)).get();
+        Rating rating = ratingRepository.findByParkingLotId(Math.toIntExact(id)).get();
         List<ParkingAvailableTime> availableTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
         List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
 
-        return ParkingLotResponseDto.of(ParkingLotDto.of(found, owner, availableTimeList, priceList));
+        return ParkingLotResponseDto.of(ParkingLotDto.of(found, owner, rating, availableTimeList, priceList));
     }
 
     @Transactional(readOnly = true)
