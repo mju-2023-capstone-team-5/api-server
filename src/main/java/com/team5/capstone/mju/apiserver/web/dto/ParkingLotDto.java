@@ -42,6 +42,9 @@ public class ParkingLotDto {
     @JsonIgnore
     private float ratingAvg;
 
+    @JsonIgnore
+    private Integer ratingNum;
+
     @JsonProperty(value = "type")
     private String[] type;
 
@@ -150,7 +153,10 @@ public class ParkingLotDto {
         if(rating.isPresent()) {
             ratingAvg = rating.get().getRatingAvg();
         }
-
+        Integer ratingNum = 0;
+        if(rating.isPresent()) {
+            ratingNum = rating.get().getRatingNum();
+        }
 
 
         Optional<ParkingPrice> hour = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.HOUR.getType()))
@@ -190,6 +196,7 @@ public class ParkingLotDto {
                 .monthPrice(monthPrice)
                 .hourPrice(hourPrice)
                 .ratingAvg(ratingAvg)
+                .ratingNum(ratingNum)
                 .time(times.toArray(new ParkingLotTime[0]))
                 .build();
     }
