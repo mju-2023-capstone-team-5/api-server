@@ -5,6 +5,7 @@ import com.team5.capstone.mju.apiserver.web.entity.History;
 import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
+import com.team5.capstone.mju.apiserver.web.exceptions.TimeNotFoundException;
 import com.team5.capstone.mju.apiserver.web.vo.ReservationInfo;
 import lombok.*;
 
@@ -35,7 +36,7 @@ public class ReservationRequestDto {
         reservation.setUserId(userId);
         reservation.setParkingLotId(parkingLotId);
         reservation.setPrice(price);
-        if (monthly == null && hourly == null) throw new EntityNotFoundException("예약 관련 시간 정보가 존재하지 않습니다");
+        if (monthly == null && hourly == null) throw new TimeNotFoundException();
         else if (monthly != null) {
             reservation.setDateType(ParkingLotPriceType.MONTH.getType());
             reservation.setDate(monthly.getDate());

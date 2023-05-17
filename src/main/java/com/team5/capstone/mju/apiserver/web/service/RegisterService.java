@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.RegisterRequestDto;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ public class RegisterService {
     @Transactional
     public void registerNewUser(RegisterRequestDto registerRequestDto) {
         User found = userRepository.findById(registerRequestDto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User를 찾을 수 없습니다"));
+                .orElseThrow(() -> new UserNotFoundException(registerRequestDto.getUserId()));
 
         found.addExtraInfoSelf(registerRequestDto); // User 객체 스스로 추가 정보 삽입
     }

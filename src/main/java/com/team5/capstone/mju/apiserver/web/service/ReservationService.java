@@ -7,6 +7,10 @@ import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
+import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.PayReceiptNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.ReservationNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
@@ -40,7 +44,7 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public ReservationResponseDto getReservationInfo(Long id) {
         Reservation found = reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("예약내역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
 
         return ReservationResponseDto.of(found);
     }
@@ -49,9 +53,9 @@ public class ReservationService {
     @Transactional
     public ReservationResponseDto createReservation(ReservationRequestDto requestDto) {
         ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
-                .orElseThrow(() -> new EntityNotFoundException("주차장이 존재하지 않습니다."));
+                .orElseThrow(() -> new ParkingLotNotFoundException(requestDto.getParkingLotId()));
         User foundUser = userRepository.findById(Long.valueOf(requestDto.getUserId()))
-                .orElseThrow(() -> new EntityNotFoundException("사용자가 존재하지 않습니다"));
+                .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
 
         UserPointReceiptResponseDto usedDto = userService.usePoint(foundUser.getUserid(), Long.valueOf(requestDto.getPrice()));
         UserPointReceiptResponseDto earnedDto = userService.earnPointToOwner(Long.valueOf(foundParkingLot.getOwnerId()), Long.valueOf(requestDto.getPrice()));
@@ -68,7 +72,7 @@ public class ReservationService {
     @Transactional
     public ReservationResponseDto updateReservation(Long id, ReservationRequestDto requestDto) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("예약내역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
 
         // 예약 상세 정보를 업데이트합니다.
         reservation.updateAllInfoSelf(requestDto);
@@ -79,14 +83,16 @@ public class ReservationService {
     @Transactional
     public void deleteReservation(Long id) {
         Reservation found = reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("예약내역을 찾을 수 없습니다"));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
 
         String[] ids = found.getPayReceiptIds().split(",");
         Long userReceiptId = Long.valueOf(ids[0]);
         Long ownerReceiptId = Long.valueOf(ids[1]);
 
-        UserPayReceipt userPaidReceipt = userPayReceiptRepository.findById(userReceiptId).get();
-        UserPayReceipt ownerPaidReceipt = userPayReceiptRepository.findById(ownerReceiptId).get();
+        UserPayReceipt userPaidReceipt = userPayReceiptRepository.findById(userReceiptId)
+                .orElseThrow(() -> new PayReceiptNotFoundException("포인트"));
+        UserPayReceipt ownerPaidReceipt = userPayReceiptRepository.findById(ownerReceiptId)
+                .orElseThrow(() -> new PayReceiptNotFoundException("포인트"));
 
         // 사용자가 사용했던 포인트 복구
         userService.cancelUsePoint(Long.valueOf(userPaidReceipt.getUserId()), userPaidReceipt.getAmount());

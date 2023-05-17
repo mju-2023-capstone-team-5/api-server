@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import com.team5.capstone.mju.apiserver.web.exceptions.IllegalImageFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -44,6 +45,7 @@ public class AmazonS3Service {
         else if (fileExtension.equalsIgnoreCase("png")) {
             metadata.setContentType(MediaType.IMAGE_PNG_VALUE);
         }
+        else throw new IllegalImageFormatException();
         metadata.setContentLength(bytes.length);
 
         s3Client.putObject(new PutObjectRequest(bucket, uploadPathFile, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));

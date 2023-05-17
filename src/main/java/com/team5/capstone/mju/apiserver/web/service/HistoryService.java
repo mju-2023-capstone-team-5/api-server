@@ -3,6 +3,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 import com.team5.capstone.mju.apiserver.web.dto.HistoryRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.HistoryResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.History;
+import com.team5.capstone.mju.apiserver.web.exceptions.HistoryNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class HistoryService {
     @Transactional
     public HistoryResponseDto getHistoryInfo(Long id) {
         History found = historyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("예약 내역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new HistoryNotFoundException(id));
 
         HistoryResponseDto dto = HistoryResponseDto.builder()
                 .historyId(Math.toIntExact(found.getHistoryId()))
@@ -60,6 +61,8 @@ public class HistoryService {
     //이용내역 삭제
     @Transactional
     public void deleteHistory(Long id) {
-        historyRepository.deleteById(id);
+        History found = historyRepository.findById(id)
+                .orElseThrow(() -> new HistoryNotFoundException(id));
+        historyRepository.delete(found);
     }
 }

@@ -4,6 +4,8 @@ import com.team5.capstone.mju.apiserver.web.dto.QnaRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.Qna;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.exceptions.QnANotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.QnaRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,7 @@ public class CustomerSupportService {
 
         // 이메일 보내기
         User user = userRepository.findById((long) requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+                .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
         String userEmail = user.getEmail();
         String emailSubject = "QnA 등록 안내";
         String emailContent = "성공적으로 QnA를 등록하였습니다.";
@@ -85,7 +87,7 @@ public class CustomerSupportService {
     @Transactional
     public QnaResponseDto updateQna(Long id, QnaRequestDto requestDto) {
         Qna qna = qnaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
+                .orElseThrow(() -> new QnANotFoundException(id));
 
         // QnA 상세 정보를 업데이트합니다.
         qna.updateAllInfoSelf(requestDto);
@@ -96,7 +98,7 @@ public class CustomerSupportService {
     @Transactional
     public void deleteQna(Long id) {
         Qna qna = qnaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("QnA를 찾을 수 없습니다."));
+                .orElseThrow(() -> new QnANotFoundException(id));
 
         qnaRepository.deleteById(id);
     }

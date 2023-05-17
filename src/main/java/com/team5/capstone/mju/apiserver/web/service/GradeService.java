@@ -3,6 +3,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.GradeResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.Grade;
+import com.team5.capstone.mju.apiserver.web.exceptions.GradeNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class GradeService {
     @Transactional
     public GradeResponseDto updateGrade(Long id, GradeRequestDto requestDto) {
         Grade grade = gradeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("후기를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GradeNotFoundException(id));
 
         // 후기 상세 정보를 업데이트합니다.
         grade.updateAllInfoSelf(requestDto);
@@ -61,7 +62,7 @@ public class GradeService {
     @Transactional
     public void deleteGrade(Long id) {
         Grade grade = gradeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("후기를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GradeNotFoundException(id));
 
         gradeRepository.deleteById(id);
     }

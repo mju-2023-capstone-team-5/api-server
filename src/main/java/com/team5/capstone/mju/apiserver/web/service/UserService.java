@@ -7,6 +7,7 @@ import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
 import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
 import com.team5.capstone.mju.apiserver.web.enums.UserDefaultPoint;
 import com.team5.capstone.mju.apiserver.web.enums.UserPayReceiptType;
+import com.team5.capstone.mju.apiserver.web.exceptions.*;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPointRepository;
@@ -39,7 +40,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto getUserInfo(Long id) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
@@ -49,9 +50,9 @@ public class UserService {
     @Transactional(readOnly = true)
     public OwnerResponseDto getParkingLotOwnerInfo(Long id) {
         ParkingLotOwner found = ownerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new OwnerNotFoundException(id));
         User foundUser = userRepository.findById(Long.valueOf(found.getOwnerId()))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(found.getOwnerId()));
 
         return OwnerResponseDto.of(found, foundUser);
 
@@ -61,7 +62,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.delete(found);
     }
 
@@ -70,14 +71,14 @@ public class UserService {
     @Transactional
     public void deleteUserFromKakaoId(Long kakaoId) {
         User found = userRepository.findByKakaoAppUuid(String.valueOf(kakaoId))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 카카오 유저가 없습니다."));
+                .orElseThrow(() -> new KakaoSocialLoginUserNotFoundException(kakaoId));
         userRepository.delete(found);
     }
 
     @Transactional(readOnly = true)
     public List<ParkingLotResponseDto> getMyAllParkingLots(Long id) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         List<ParkingLotOwner> all = ownerRepository.findAllByOwnerId(Math.toIntExact(id));
 
@@ -93,9 +94,9 @@ public class UserService {
     @Transactional
     public UserPointReceiptResponseDto usePoint(Long id, Long amount) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserPointNotFoundException(found.getUserid()));
 
         foundPoint.use(amount);
 
@@ -106,9 +107,9 @@ public class UserService {
     @Transactional
     public UserPointReceiptResponseDto earnPoint(Long id, Long amount) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserPointNotFoundException(found.getUserid()));
 
         foundPoint.earn(amount);
 
@@ -119,7 +120,7 @@ public class UserService {
     @Transactional
     public UserPointReceiptResponseDto earnPointToOwner(Long id, Long amount) {
         ParkingLotOwner owner = ownerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 주차장 주인 데이터가 없습니다"));
+                .orElseThrow(() -> new OwnerNotFoundException(id));
 
         return earnPoint(Long.valueOf(owner.getOwnerId()), amount);
     }
@@ -127,9 +128,9 @@ public class UserService {
     @Transactional
     public void cancelEarnPoint(Long id, Long amount) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserPointNotFoundException(found.getUserid()));
 
         foundPoint.use(amount);
     }
@@ -137,9 +138,9 @@ public class UserService {
     @Transactional
     public void cancelUsePoint(Long id, Long amount) {
         User found = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(id));
         UserPoint foundPoint = userPointRepository.findByUserId(Math.toIntExact(found.getUserid()))
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저의 포인트가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserPointNotFoundException(found.getUserid()));
 
         foundPoint.earn(amount);
     }
@@ -150,7 +151,7 @@ public class UserService {
     public UserPointResponseDto createAndInitPoint(Long id) {
         userPointRepository.findByUserId(Math.toIntExact(id))
                 .ifPresent((point) -> {
-                    throw new RuntimeException("사용자에 대한 포인트가 이미 존재합니다.");
+                    throw new UserPointAlreadyExistException();
                 });
         UserPoint userPoint = new UserPoint();
         userPoint.setPoints(UserDefaultPoint.DEMO.getAmount());
