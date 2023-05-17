@@ -35,6 +35,12 @@ public class ParkingLotResponseDto {
     @JsonProperty(value = "imageUrl")
     private String imageUrl;
 
+    @JsonProperty(value = "ratingAvg")
+    private float ratingAvg;
+
+    @JsonProperty(value = "ratingNum")
+    private Integer ratingNum;
+
     @JsonProperty(value = "type")
     private String[] type;
 
@@ -69,6 +75,8 @@ public class ParkingLotResponseDto {
                 .monthPrice(parkingLotDto.getMonthPrice())
                 .hourPrice(parkingLotDto.getHourPrice())
                 .time(parkingLotDto.getTime())
+                .ratingAvg(parkingLotDto.getRatingAvg())
+                .ratingNum(parkingLotDto.getRatingNum())
                 .imageUrl(parkingLotDto.getImageUrl()) // 응답 데이터로 추가
                 .build();
     }

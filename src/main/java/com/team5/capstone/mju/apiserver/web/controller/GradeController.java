@@ -2,9 +2,8 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.GradeResponseDto;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
-import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.service.GradeService;
+import com.team5.capstone.mju.apiserver.web.service.RatingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +19,11 @@ import java.util.List;
 @Tag(name = "후기&평점 Controller", description = "후기&평점 관련 API 요청 Controller")
 public class GradeController {
     private final GradeService gradeService;
-    private final ParkingLotRepository parkingLotRepository;
+    private final RatingService ratingService;
 
-    public GradeController(GradeService gradeService, ParkingLotRepository parkingLotRepository) {
+    public GradeController(GradeService gradeService, RatingService ratingService) {
         this.gradeService = gradeService;
-        this.parkingLotRepository = parkingLotRepository;
+        this.ratingService = ratingService;
     }
 
 
@@ -60,6 +58,10 @@ public class GradeController {
     public ResponseEntity<GradeResponseDto> createGrade(@RequestBody GradeRequestDto requestDto) {
         log.info(requestDto.toString());
         GradeResponseDto responseDto = gradeService.createGrade(requestDto);
+
+        // 주차장 평점 업데이트
+        ratingService.updateRating(requestDto.getParkingLotId(), requestDto.getRating());
+
         return ResponseEntity.ok(responseDto);
     }
 

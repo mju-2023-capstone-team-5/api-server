@@ -2,10 +2,7 @@ package com.team5.capstone.mju.apiserver.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingAvailableTime;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingPrice;
+import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotPrice;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotTime;
@@ -41,6 +38,12 @@ public class ParkingLotDto {
 
     @JsonIgnore
     private Integer id;
+
+    @JsonIgnore
+    private float ratingAvg;
+
+    @JsonIgnore
+    private Integer ratingNum;
 
     @JsonProperty(value = "type")
     private String[] type;
@@ -133,7 +136,7 @@ public class ParkingLotDto {
         return parkingAvailableTimeList;
     }
 
-    public static ParkingLotDto of(ParkingLot parkingLot, ParkingLotOwner owner, List<ParkingAvailableTime> availableList, List<ParkingPrice> priceList) {
+    public static ParkingLotDto of(ParkingLot parkingLot, ParkingLotOwner owner, Optional<Rating> rating, List<ParkingAvailableTime> availableList, List<ParkingPrice> priceList) {
 
         Optional<ParkingPrice> month = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.MONTH.getType()))
                 .findFirst();
@@ -144,6 +147,17 @@ public class ParkingLotDto {
             monthPrice.setMinimum(month.get().getMinimum());
             monthPrice.setSurcharge(month.get().getSurcharge());
         }
+
+
+        Float ratingAvg = 0.0f;
+        if(rating.isPresent()) {
+            ratingAvg = rating.get().getRatingAvg();
+        }
+        Integer ratingNum = 0;
+        if(rating.isPresent()) {
+            ratingNum = rating.get().getRatingNum();
+        }
+
 
         Optional<ParkingPrice> hour = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.HOUR.getType()))
                 .findFirst();
@@ -181,6 +195,8 @@ public class ParkingLotDto {
                 .type(parkingLot.getCarType().split(","))
                 .monthPrice(monthPrice)
                 .hourPrice(hourPrice)
+                .ratingAvg(ratingAvg)
+                .ratingNum(ratingNum)
                 .time(times.toArray(new ParkingLotTime[0]))
                 .build();
     }
