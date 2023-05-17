@@ -26,7 +26,8 @@ public class RegisterController {
 
     @Operation(summary = "회원가입 API", description = "신규 유저의 정보를 받아 유저의 추가 정보를 업데이트하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "추가 정보 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "추가 정보 업데이트에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자의 정보가 존재하지 않아 추가 정보 업데이트에 실패")
             }
     )
     @PostMapping("/register")

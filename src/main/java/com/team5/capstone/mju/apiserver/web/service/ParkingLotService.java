@@ -7,6 +7,9 @@ import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
+import com.team5.capstone.mju.apiserver.web.exceptions.OwnerNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.*;
 import com.team5.capstone.mju.apiserver.web.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -52,10 +55,10 @@ public class ParkingLotService {
     @Transactional(readOnly = true)
     public ParkingLotResponseDto getParkingLotInfo(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
 
         ParkingLotOwner owner = ownerRepository.findByParkingLotId(Math.toIntExact(id))
-                .orElseThrow(() -> new EntityNotFoundException("주차장 주인 정보를 찾을 수 없습니다"));
+                .orElseThrow(() -> new OwnerNotFoundException(id));
         Optional<Rating> rating = ratingRepository.findByParkingLotId(Math.toIntExact(id));
         List<ParkingAvailableTime> availableTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
         List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
@@ -87,7 +90,7 @@ public class ParkingLotService {
     public ParkingLotResponseDto createParkingLot(ParkingLotDto requestDto) {
 
         User ownerUser = userRepository.findById(Long.valueOf(requestDto.getOwnerId()))
-                .orElseThrow(() -> new EntityNotFoundException("주차장 주인 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new OwnerNotFoundException(requestDto.getOwnerId()));
 
         // ParkingLot 엔티티를 데이터베이스에 저장
         ParkingLot parkingLot = requestDto.parseToParkingLot();
@@ -130,7 +133,7 @@ public class ParkingLotService {
     @Transactional
     public ParkingLotDto updateParkingLot(Long id, ParkingLotDto requestDto) {
         ParkingLot found = parkingLotRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
         ParkingLot requestParkingLot = requestDto.parseToParkingLot();
 
         // 주차장 상세 정보를 업데이트합니다.
@@ -139,7 +142,8 @@ public class ParkingLotService {
         // owner를 업데이트
         ParkingLotOwner requestOwner = requestDto.parseToParkingLotOwner();
         requestOwner.setParkingLotId(Math.toIntExact(found.getParkingLotId()));
-        ParkingLotOwner foundOwner = ownerRepository.findByParkingLotId(Math.toIntExact(id)).get();
+        ParkingLotOwner foundOwner = ownerRepository.findByParkingLotId(Math.toIntExact(id))
+                .orElseThrow(() -> new OwnerNotFoundException(id));
         foundOwner.updateAllSelf(requestOwner);
 
         // price 정보를 업데이트
@@ -175,21 +179,21 @@ public class ParkingLotService {
     @Transactional
     public void updateParkingLotStatus(Long id) {
         parkingLotRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."))
+                .orElseThrow(() -> new ParkingLotNotFoundException(id))
                 .updateStatusToParkingAvailableSelf(); // WAIT status인 경우 스스로 ParkingAvailable status로 변경
     }
 
     @Transactional
     public void addImageUrl(Long id, String url) {
         ParkingLot found = parkingLotRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
         found.setImageUrl(url);
     }
 
     @Transactional
     public void deleteParkingLot(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ParkingLotNotFoundException(id));
         parkingLotRepository.delete(found);
     }
 
@@ -198,8 +202,6 @@ public class ParkingLotService {
     public void permitForDemo() {
         List<ParkingLot> allByStatus = parkingLotRepository.findAllByStatus(ParkingLotStatus.WAIT.getStatus());
 
-        allByStatus.forEach(parkingLot -> {
-            parkingLot.updateStatusToParkingAvailableSelf();
-        });
+        allByStatus.forEach(ParkingLot::updateStatusToParkingAvailableSelf);
     }
 }

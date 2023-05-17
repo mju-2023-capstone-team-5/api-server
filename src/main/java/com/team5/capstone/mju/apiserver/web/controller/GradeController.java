@@ -51,7 +51,8 @@ public class GradeController {
 
     @Operation(summary = "후기 정보 생성 API", description = "후기 정보를 받아 새로운 예약을 생성하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 후기 생성에 성공")
+                    @ApiResponse(responseCode = "200", description = "새로운 후기 생성에 성공"),
+                    @ApiResponse(responseCode = "200", description = "사용자나 주차장 정보가 존재하지 않아 새로운 후기 생성에 실패")
             }
     )
     @PostMapping("/grade")
@@ -67,7 +68,8 @@ public class GradeController {
 
     @Operation(summary = "후기 정보 업데이트 API", description = "후기 정보를 받아 예약을 업데이트 하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "후기 정보 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "후기 정보 업데이트에 성공"),
+                    @ApiResponse(responseCode = "404", description = "후기 정보가 존재하지 않아 업데이트에 실패")
             }
     )
     @PatchMapping("/grade/{id}")
@@ -79,7 +81,9 @@ public class GradeController {
 
     @Operation(summary = "후기 정보 삭제 API", description = "후기 아이디를 받아 후기을 삭제하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "후기 삭제에 성공")
+                    @ApiResponse(responseCode = "200", description = "후기 삭제에 성공"),
+                    @ApiResponse(responseCode = "404", description = "QnA 정보가 존재하지 않아 삭제에 실패")
+
             }
     )
     @DeleteMapping("/grade/{id}")

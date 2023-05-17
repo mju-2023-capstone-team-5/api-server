@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team5.capstone.mju.apiserver.web.dto.LoginRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.LoginResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.User;
+import com.team5.capstone.mju.apiserver.web.exceptions.InvalidateTokenException;
+import com.team5.capstone.mju.apiserver.web.exceptions.KakaoProviderMyInfoNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import com.team5.capstone.mju.apiserver.web.util.JwtUtil;
 import com.team5.capstone.mju.apiserver.web.vo.NewOrFoundUser;
@@ -115,7 +117,7 @@ public class LoginService {
     }
 
     public LoginResponseDto tryLogin(LoginRequestDto loginRequestDto) {
-        if (!isValidateToken(loginRequestDto)) throw new RuntimeException();
+        if (!isValidateToken(loginRequestDto)) throw new InvalidateTokenException("kakao", loginRequestDto.getAccessToken());
         Optional<JsonNode> myInfo = getMyInfo(loginRequestDto);
 
         if (myInfo.isPresent()) {
@@ -136,6 +138,6 @@ public class LoginService {
                     .isNewUser(newOrFoundUser.isNewUser())
                     .build();
         }
-        throw new RuntimeException();
+        throw new KakaoProviderMyInfoNotFoundException();
     }
 }

@@ -27,7 +27,8 @@ public class HistoryController {
 
     @Operation(summary = "예약 내역 반환 API", description = "예약 내역 아이디를 받아 정보를 반환하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 내역 조회에 성공")
+                    @ApiResponse(responseCode = "200", description = "예약 내역 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "예약 내역 정보가 존재하지 않아 조회에 실패")
             }
     )
     @GetMapping("/history/{id}") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
@@ -37,7 +38,8 @@ public class HistoryController {
 
     @Operation(summary = "예약 내역 생성 API", description = "예약 정보를 받아 새로운 예약 정보를 생성하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 예약 정보 생성에 성공")
+                    @ApiResponse(responseCode = "200", description = "새로운 예약 정보 생성에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자 또는 주차장 정보가 존재하지 않아 예약 정보 생성에 실패")
             }
     )
     @PostMapping("/history")
@@ -49,7 +51,8 @@ public class HistoryController {
 
     @Operation(summary = "예약 내역 삭제 API", description = "예약 정보 아이디를 받아 내역을 삭제하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 내역 삭제에 성공")
+                    @ApiResponse(responseCode = "200", description = "예약 내역 삭제에 성공"),
+                    @ApiResponse(responseCode = "404", description = "예약 내역 정보가 존재하지 않아 조회에 실패")
             }
     )
     @DeleteMapping("/history/{id}")

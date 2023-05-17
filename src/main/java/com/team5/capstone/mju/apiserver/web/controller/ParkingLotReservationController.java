@@ -25,7 +25,8 @@ public class ParkingLotReservationController {
 
     @Operation(summary = "예약 정보 반환 API", description = "예약 아이디를 받아 정보를 반환하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 정보 조회에 성공")
+                    @ApiResponse(responseCode = "200", description = "예약 정보 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "예약 정보가 존재하지 않아 조회에 실패")
             }
     )
     @GetMapping("/reservation/{id}")
@@ -35,7 +36,8 @@ public class ParkingLotReservationController {
 
     @Operation(summary = "예약 정보 생성 API", description = "예약 정보를 받아 새로운 예약을 생성하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 예약 생성에 성공")
+                    @ApiResponse(responseCode = "200", description = "새로운 예약 생성에 성공"),
+                    @ApiResponse(responseCode = "404", description = "주차장이나 사용자 정보가 존재하지 않아 예약 생성에 실패")
             }
     )
     @PostMapping("/reservation")
@@ -47,7 +49,8 @@ public class ParkingLotReservationController {
 
     @Operation(summary = "예약 정보 업데이트 API", description = "예약 정보를 받아 예약을 업데이트 하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 정보 업데이트에 성공")
+                    @ApiResponse(responseCode = "200", description = "예약 정보 업데이트에 성공"),
+                    @ApiResponse(responseCode = "404", description = "예약 정보가 존재하지 않아 예약 조회에 실패")
             }
     )
     @PatchMapping("/reservation/{id}")
@@ -59,7 +62,8 @@ public class ParkingLotReservationController {
 
     @Operation(summary = "예약 정보 삭제 API", description = "예약 아이디를 받아 예약을 삭제하는 API",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 삭제에 성공")
+                    @ApiResponse(responseCode = "200", description = "예약 삭제에 성공"),
+                    @ApiResponse(responseCode = "404", description = "예약 정보가 존재하지 않아 삭제에 실패")
             }
     )
     @DeleteMapping("/reservation/{id}")
