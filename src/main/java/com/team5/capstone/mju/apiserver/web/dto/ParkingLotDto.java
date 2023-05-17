@@ -133,7 +133,7 @@ public class ParkingLotDto {
         return parkingAvailableTimeList;
     }
 
-    public static ParkingLotDto of(ParkingLot parkingLot, ParkingLotOwner owner, Rating rating, List<ParkingAvailableTime> availableList, List<ParkingPrice> priceList) {
+    public static ParkingLotDto of(ParkingLot parkingLot, ParkingLotOwner owner, Optional<Rating> rating, List<ParkingAvailableTime> availableList, List<ParkingPrice> priceList) {
 
         Optional<ParkingPrice> month = priceList.stream().filter(price -> price.getDateType().equals(ParkingLotPriceType.MONTH.getType()))
                 .findFirst();
@@ -146,7 +146,10 @@ public class ParkingLotDto {
         }
 
 
-        Float ratingAvg = rating != null ? rating.getRatingAvg() : null;
+        Float ratingAvg = 0.0f;
+        if(rating.isPresent()) {
+            ratingAvg = rating.get().getRatingAvg();
+        }
 
 
 

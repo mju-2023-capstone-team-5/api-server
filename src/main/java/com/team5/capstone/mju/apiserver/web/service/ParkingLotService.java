@@ -52,7 +52,7 @@ public class ParkingLotService {
                 .orElseThrow(() -> new EntityNotFoundException("주차장을 찾을 수 없습니다."));
 
         ParkingLotOwner owner = ownerRepository.findByParkingLotId(Math.toIntExact(id)).get();
-        Rating rating = ratingRepository.findByParkingLotId(Math.toIntExact(id)).get();
+        Optional<Rating> rating = ratingRepository.findByParkingLotId(Math.toIntExact(id));
         List<ParkingAvailableTime> availableTimeList = availableTimeRepository.findAllByParkingLotId(Math.toIntExact(id));
         List<ParkingPrice> priceList = priceRepository.findAllByParkingLotId(Math.toIntExact(id));
 
