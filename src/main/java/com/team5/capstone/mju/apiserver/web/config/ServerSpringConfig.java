@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
                 )
         )
 )
+@EnableScheduling
 public class ServerSpringConfig {
     @Bean(name = "serverRestTemplate")
     public RestTemplate restTemplate() {
