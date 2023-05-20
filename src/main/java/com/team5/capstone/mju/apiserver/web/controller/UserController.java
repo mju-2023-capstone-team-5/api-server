@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping("/users/{id}/add-fcm-token") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
     public ResponseEntity<String> addFcmToken(@PathVariable Long id, @RequestBody UserAddFcmTokenRequestDTO requestDTO) {
         log.info("token: " + requestDTO.getFcmToken());
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(userService.addFcmToken(id, requestDTO));
     }
 
 
