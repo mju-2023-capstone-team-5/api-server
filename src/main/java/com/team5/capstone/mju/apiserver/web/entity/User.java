@@ -37,6 +37,9 @@ public class User {
     @Column(name = "social_login_token")
     private String socialLoginToken;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @Column(name = "car_number")
     private String carNumber;
 
