@@ -1,18 +1,18 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
-import com.team5.capstone.mju.apiserver.web.dto.OwnerResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.UserResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.*;
 import com.team5.capstone.mju.apiserver.web.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @Tag(name = "유저 컨트롤러", description = "유저 관련 API 요청 controller")
@@ -23,6 +23,19 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    @Operation(summary = "사용자 정보 반환 API", description = "사용자의 아이디를 받아 사용자의 정보를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 정보 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자의 정보가 존재하지 않아 정보 조회에 실패")
+            }
+    )
+    @PostMapping("/users/{id}/add-fcm-token") // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
+    public ResponseEntity<String> addFcmToken(@PathVariable Long id, @RequestBody UserAddFcmTokenRequestDTO requestDTO) {
+        log.info("token: " + requestDTO.getFcmToken());
+        return ResponseEntity.ok("success");
+    }
+
 
     @Operation(summary = "사용자 정보 반환 API", description = "사용자의 아이디를 받아 사용자의 정보를 반환하는 API",
             responses = {
