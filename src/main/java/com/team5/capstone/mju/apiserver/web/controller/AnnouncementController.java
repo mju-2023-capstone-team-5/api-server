@@ -2,8 +2,6 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.dto.AnnouncementRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.AnnouncementResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
-import com.team5.capstone.mju.apiserver.web.dto.GradeResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.AnnouncementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -24,6 +24,18 @@ public class AnnouncementController {
     @Autowired // 생성자를 통한 의존성 주입
     public AnnouncementController(AnnouncementService announcementService) {
         this.announcementService = announcementService;
+    }
+
+    @Operation(summary = "공지사항 List 반환 API", description = "공지사항 List를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "공지사항 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "공지사항이 존재하지 않아 조회에 실패")
+            }
+    )
+    @GetMapping("/announcement")
+    public ResponseEntity<List<AnnouncementResponseDto>> getAnnouncement() {
+        List<AnnouncementResponseDto> announcementList = (List<AnnouncementResponseDto>) announcementService.getAnnouncementInfoList();
+        return ResponseEntity.ok(announcementList);
     }
 
     @Operation(summary = "공지사항 반환 API", description = "공지사항 아이디를 받아 정보를 반환하는 API",

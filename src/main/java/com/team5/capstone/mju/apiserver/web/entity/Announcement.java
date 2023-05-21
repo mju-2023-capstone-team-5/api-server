@@ -1,7 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
 import com.team5.capstone.mju.apiserver.web.dto.AnnouncementRequestDto;
-import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class AnnouncementService {
 
@@ -24,6 +27,22 @@ public class AnnouncementService {
         this.announcementRepository = announcementRepository;
     }
 
+    @Transactional
+    public List<AnnouncementResponseDto> getAnnouncementInfoList() {
+        List<Announcement> announcementList = announcementRepository.findAll();
+        return announcementList.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+    @Transactional
+    private AnnouncementResponseDto mapToResponseDto(Announcement announcement) {
+        AnnouncementResponseDto responseDto = new AnnouncementResponseDto();
+        responseDto.setAnnouncementId(Math.toIntExact(announcement.getAnnouncementId()));
+        responseDto.setTitle(announcement.getTitle());
+        responseDto.setContent(announcement.getContent());
+        responseDto.setTimestamp(announcement.getTimestamp());
+        return responseDto;
+    }
     @Transactional
     public AnnouncementResponseDto getAnnouncementInfo(Long id) {
         Announcement found = announcementRepository.findById(id)
@@ -71,4 +90,5 @@ public class AnnouncementService {
                 .orElseThrow(() -> new AnnouncementNotFoundException(id));
         announcementRepository.delete(found);
     }
+
 }
