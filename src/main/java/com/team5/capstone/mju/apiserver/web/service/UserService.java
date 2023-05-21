@@ -51,8 +51,8 @@ public class UserService {
     public OwnerResponseDto getParkingLotOwnerInfo(Long id) {
         ParkingLotOwner found = ownerRepository.findById(id)
                 .orElseThrow(() -> new OwnerNotFoundException(id));
-        User foundUser = userRepository.findById(Long.valueOf(found.getOwnerId()))
-                .orElseThrow(() -> new UserNotFoundException(found.getOwnerId()));
+        User foundUser = userRepository.findById(Long.valueOf(found.getOwnerUserId()))
+                .orElseThrow(() -> new UserNotFoundException(found.getOwnerUserId()));
 
         return OwnerResponseDto.of(found, foundUser);
 
@@ -80,7 +80,7 @@ public class UserService {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        List<ParkingLotOwner> all = ownerRepository.findAllByOwnerId(Math.toIntExact(id));
+        List<ParkingLotOwner> all = ownerRepository.findAllByOwnerUserId(Math.toIntExact(id));
 
         List<ParkingLotResponseDto> resultDtos = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public class UserService {
         ParkingLotOwner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new OwnerNotFoundException(id));
 
-        return earnPoint(Long.valueOf(owner.getOwnerId()), amount);
+        return earnPoint(Long.valueOf(owner.getOwnerUserId()), amount);
     }
 
     @Transactional

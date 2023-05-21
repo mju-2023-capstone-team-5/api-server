@@ -1,15 +1,12 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.exceptions.OwnerNotFoundException;
 import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
-import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.*;
 import com.team5.capstone.mju.apiserver.web.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +15,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -105,7 +100,7 @@ public class ParkingLotService {
         ParkingLotOwner savedOwner = ownerRepository.save(parkingLotOwner);
 
         // 더티 체킹을 통한 owner 지정
-        saved.setOwnerId(savedOwner.getOwnerId());
+        saved.setOwnerId(savedOwner.getOwnerUserId());
 
         // Price를 생성해 존재하는 Price는 데이터베이스에 저장
         requestDto.parseMonthlyToParkingLotPrice()

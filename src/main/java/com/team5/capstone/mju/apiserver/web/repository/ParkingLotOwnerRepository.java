@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParkingLotOwnerRepository extends JpaRepository<ParkingLotOwner, Long> {
-    List<ParkingLotOwner> findAllByOwnerId(Integer ownerId);
+    List<ParkingLotOwner> findAllByOwnerUserId(Integer ownerId);
     Optional<ParkingLotOwner> findByParkingLotId(Integer parkingLotId);
 }
