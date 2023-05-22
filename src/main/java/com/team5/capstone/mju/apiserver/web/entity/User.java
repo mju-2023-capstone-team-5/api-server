@@ -1,6 +1,8 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
 import com.team5.capstone.mju.apiserver.web.dto.RegisterRequestDto;
+import com.team5.capstone.mju.apiserver.web.dto.UserAddFcmTokenRequestDTO;
+import com.team5.capstone.mju.apiserver.web.exceptions.CustomException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,6 +39,9 @@ public class User {
     @Column(name = "social_login_token")
     private String socialLoginToken;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @Column(name = "car_number")
     private String carNumber;
 
@@ -48,5 +53,9 @@ public class User {
         this.address = registerRequestDto.getAddress();
         this.carNumber = registerRequestDto.getCarNumber();
         this.phone = registerRequestDto.getPhone();
+    }
+
+    public void addFcmTokenSelf(UserAddFcmTokenRequestDTO requestDTO) {
+        this.fcmToken = requestDTO.getFcmToken();
     }
 }

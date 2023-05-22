@@ -173,4 +173,13 @@ public class UserService {
         return saved;
     }
 
+    @Transactional
+    public String addFcmToken(Long userId, UserAddFcmTokenRequestDTO requestDTO) {
+        User found = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        found.addFcmTokenSelf(requestDTO);
+        return "success";
+    }
+
 }
