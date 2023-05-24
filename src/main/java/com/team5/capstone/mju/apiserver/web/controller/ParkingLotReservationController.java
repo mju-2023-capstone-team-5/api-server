@@ -1,7 +1,9 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationResponseDto;
+import com.team5.capstone.mju.apiserver.web.service.NotificationService;
 import com.team5.capstone.mju.apiserver.web.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "예약 Controller", description = "예약 관련 API 요청 Controller")
 public class ParkingLotReservationController {
     private final ReservationService reservationService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public ParkingLotReservationController(ReservationService reservationService) {
+    public ParkingLotReservationController(ReservationService reservationService, NotificationService notificationService) {
         this.reservationService = reservationService;
+        this.notificationService = notificationService;
     }
 
     @Operation(summary = "예약 정보 반환 API", description = "예약 아이디를 받아 정보를 반환하는 API",
@@ -41,9 +45,10 @@ public class ParkingLotReservationController {
             }
     )
     @PostMapping("/reservation")
-    public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto requestDto) {
+    public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto requestDto) throws FirebaseMessagingException {
         log.info(requestDto.toString());
         ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
+        notificationService.sendReservationSuccessPush(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

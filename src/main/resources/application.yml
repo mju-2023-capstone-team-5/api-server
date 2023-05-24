@@ -55,3 +55,5 @@ cloud:
 extends:
   app-id: ${KAKAO_DEVELOPERS_APP_ID}
   jwt-secret: ${JWT_SECRET_KEY}
+  firebase:
+    admin-key-path: ${FIREBASE_ADMIN_KEY_PATH}

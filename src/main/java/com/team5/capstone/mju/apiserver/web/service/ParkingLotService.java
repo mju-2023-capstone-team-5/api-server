@@ -1,15 +1,13 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseOldDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.exceptions.OwnerNotFoundException;
 import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
-import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.*;
 import com.team5.capstone.mju.apiserver.web.util.MapUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +16,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,16 +36,18 @@ public class ParkingLotService {
     private final ParkingLotOwnerRepository ownerRepository;
     private final UserRepository userRepository;
     private final RatingRepository ratingRepository;
+    private final NotificationService notificationService;
 
     @Autowired // 생성자를 통한 의존성 주입
     public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingAvailableTimeRepository availableTimeRepository, ParkingPriceRepository priceRepository, ParkingLotOwnerRepository ownerRepository, UserRepository userRepository,
-                             RatingRepository ratingRepository) {
+                             RatingRepository ratingRepository, NotificationService notificationService) {
         this.parkingLotRepository = parkingLotRepository;
         this.availableTimeRepository = availableTimeRepository;
         this.priceRepository = priceRepository;
         this.ownerRepository = ownerRepository;
         this.userRepository = userRepository;
         this.ratingRepository = ratingRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -202,6 +200,14 @@ public class ParkingLotService {
     public void permitForDemo() {
         List<ParkingLot> allByStatus = parkingLotRepository.findAllByStatus(ParkingLotStatus.WAIT.getStatus());
 
-        allByStatus.forEach(ParkingLot::updateStatusToParkingAvailableSelf);
+        allByStatus.forEach((parkingLot) -> {
+                    parkingLot.updateStatusToParkingAvailableSelf();
+                    try {
+                        notificationService.sendGrantSuccessPush(parkingLot.getParkingLotId());
+                    } catch (FirebaseMessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 }
