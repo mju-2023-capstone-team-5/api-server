@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class HistoryService {
@@ -67,9 +68,8 @@ public class HistoryService {
 
     //이용내역 삭제
     @Transactional
-    public void deleteHistory(Long id) {
-        History found = historyRepository.findById(id)
-                .orElseThrow(() -> new HistoryNotFoundException(id));
-        historyRepository.delete(found);
+    public void deleteHistory(Long reservationId) {
+        List<History> all = historyRepository.findAllByReservationId(Math.toIntExact(reservationId));
+        historyRepository.deleteAll(all);
     }
 }

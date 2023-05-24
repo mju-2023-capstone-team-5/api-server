@@ -76,8 +76,9 @@ public class ParkingLotReservationController {
             }
     )
     @DeleteMapping("/reservation/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<String> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
+        historyService.deleteHistory(id);
+        return ResponseEntity.ok("success");
     }
 }

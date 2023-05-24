@@ -49,15 +49,15 @@ public class HistoryController {
 //        return ResponseEntity.ok(responseDto);
 //    }
 
-    @Operation(summary = "예약 내역 삭제 API", description = "예약 정보 아이디를 받아 내역을 삭제하는 API",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "예약 내역 삭제에 성공"),
-                    @ApiResponse(responseCode = "404", description = "예약 내역 정보가 존재하지 않아 조회에 실패")
-            }
-    )
-    @DeleteMapping("/history/{id}")
-    public ResponseEntity<Void> deleteHistory(@PathVariable Long id) {
-        historyService.deleteHistory(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @Operation(summary = "예약 내역 삭제 API", description = "예약 정보 아이디를 받아 내역을 삭제하는 API",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "예약 내역 삭제에 성공"),
+//                    @ApiResponse(responseCode = "404", description = "예약 내역 정보가 존재하지 않아 조회에 실패")
+//            }
+//    )
+//    @DeleteMapping("/history/{id}")
+//    public ResponseEntity<Void> deleteHistory(@PathVariable Long id) {
+//        historyService.deleteHistory(id);
+//        return ResponseEntity.noContent().build();
+//    }
 }
