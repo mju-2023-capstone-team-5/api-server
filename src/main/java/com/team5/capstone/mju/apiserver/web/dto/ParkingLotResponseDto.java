@@ -32,6 +32,9 @@ public class ParkingLotResponseDto {
 
     // ParkingLotDto에서는 jsonIgnore 속성으로 요청/응답에서 보이지 않지만
     // 응답 객체로 반환할 때 of 함수에서 대입한 id 값을 @JsonProperty로 공개하여 응답 데이터에서 공개
+    @JsonProperty(value = "reviewSummary")
+    private String reviewSummary;
+
     @JsonProperty(value = "imageUrl")
     private String imageUrl;
 
@@ -78,6 +81,7 @@ public class ParkingLotResponseDto {
                 .ratingAvg(parkingLotDto.getRatingAvg())
                 .ratingNum(parkingLotDto.getRatingNum())
                 .imageUrl(parkingLotDto.getImageUrl()) // 응답 데이터로 추가
+                .reviewSummary(parkingLotDto.getReviewSummary())
                 .build();
     }
 
