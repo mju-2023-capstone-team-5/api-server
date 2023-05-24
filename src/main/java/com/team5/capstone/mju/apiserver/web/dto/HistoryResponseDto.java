@@ -28,7 +28,7 @@ public class HistoryResponseDto {
         history.setParkingLotId(parkingLotId);
         history.setStartTime(startTime);
         history.setEndTime(endTime);
-        history.setDateUsed(dateUsed);
+//        history.setDateUsed(dateUsed);
 
 
         return history;

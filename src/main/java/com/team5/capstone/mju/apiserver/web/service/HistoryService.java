@@ -43,7 +43,7 @@ public class HistoryService {
                 .parkingLotId(found.getParkingLotId())
                 .startTime(found.getStartTime())
                 .endTime(found.getEndTime())
-                .dateUsed(found.getDateUsed())
+//                .dateUsed(found.getDateUsed())
                 .build();
 
         return dto;
@@ -68,7 +68,7 @@ public class HistoryService {
         responseDto.setParkingLotId(savedHistory.getParkingLotId());
         responseDto.setStartTime(savedHistory.getStartTime());
         responseDto.setEndTime(savedHistory.getEndTime());
-        responseDto.setDateUsed(savedHistory.getDateUsed());
+//        responseDto.setDateUsed(savedHistory.getDateUsed());
 
         return responseDto;
     }

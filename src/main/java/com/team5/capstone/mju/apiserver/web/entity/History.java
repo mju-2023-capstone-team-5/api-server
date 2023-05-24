@@ -28,7 +28,7 @@ public class History {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @Column(name = "date_used")
-    private LocalDateTime dateUsed;
+    @Column(name = "reservation_id")
+    private Integer reservationId;
 
 }
