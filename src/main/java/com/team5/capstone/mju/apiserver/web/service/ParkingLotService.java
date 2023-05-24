@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotResponseDto;
 import com.team5.capstone.mju.apiserver.web.entity.*;
@@ -35,16 +36,18 @@ public class ParkingLotService {
     private final ParkingLotOwnerRepository ownerRepository;
     private final UserRepository userRepository;
     private final RatingRepository ratingRepository;
+    private final NotificationService notificationService;
 
     @Autowired // 생성자를 통한 의존성 주입
     public ParkingLotService(ParkingLotRepository parkingLotRepository, ParkingAvailableTimeRepository availableTimeRepository, ParkingPriceRepository priceRepository, ParkingLotOwnerRepository ownerRepository, UserRepository userRepository,
-                             RatingRepository ratingRepository) {
+                             RatingRepository ratingRepository, NotificationService notificationService) {
         this.parkingLotRepository = parkingLotRepository;
         this.availableTimeRepository = availableTimeRepository;
         this.priceRepository = priceRepository;
         this.ownerRepository = ownerRepository;
         this.userRepository = userRepository;
         this.ratingRepository = ratingRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -197,6 +200,14 @@ public class ParkingLotService {
     public void permitForDemo() {
         List<ParkingLot> allByStatus = parkingLotRepository.findAllByStatus(ParkingLotStatus.WAIT.getStatus());
 
-        allByStatus.forEach(ParkingLot::updateStatusToParkingAvailableSelf);
+        allByStatus.forEach((parkingLot) -> {
+                    parkingLot.updateStatusToParkingAvailableSelf();
+                    try {
+                        notificationService.sendGrantSuccessPush(parkingLot.getParkingLotId());
+                    } catch (FirebaseMessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 }

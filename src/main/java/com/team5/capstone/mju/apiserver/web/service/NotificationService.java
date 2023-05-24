@@ -17,6 +17,7 @@ import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class NotificationService {
 
@@ -57,7 +59,6 @@ public class NotificationService {
 
         Message message = buildFireBaseMessage("내 주차장 예약 알림", "사용자의 주차장 예약이 완료되었습니다.", fcmToken);
         String response = FirebaseMessaging.getInstance().send(message);
-
         return "success";
     }
 
@@ -67,12 +68,11 @@ public class NotificationService {
      * @return "success"
      */
     @Transactional(readOnly = true)
-    public String sendGrantSuccessPush(ParkingLotDto parkingLotDto) throws FirebaseMessagingException {
-        ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(parkingLotDto.getId()))
-                .orElseThrow(() -> new ParkingLotNotFoundException(parkingLotDto.getId()));
+    public String sendGrantSuccessPush(Long parkingLotId) throws FirebaseMessagingException {
+        ParkingLot foundParkingLot = parkingLotRepository.findById(parkingLotId)
+                .orElseThrow(() -> new ParkingLotNotFoundException(parkingLotId));
         ParkingLotOwner foundOwner = ownerRepository.findById(Long.valueOf(foundParkingLot.getOwnerId()))
                 .get();
-
         String fcmToken = userRepository.findById(Long.valueOf(foundOwner.getOwnerUserId()))
                 .get()
                 .getFcmToken();
