@@ -13,25 +13,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class HistoryResponseDto {
-    private int historyId;
-    private int userId;
-    private int parkingLotId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private LocalDateTime dateUsed;
+    private String parkingLotName;
 
-    public History ToEntity(){
-
-        History history = new History();
-        history.setHistoryId((long) historyId);
-        history.setUserId(userId);
-        history.setParkingLotId(parkingLotId);
-        history.setStartTime(startTime);
-        history.setEndTime(endTime);
-        history.setDateUsed(dateUsed);
-
-
-        return history;
+    public static HistoryResponseDto of(History history, ParkingLot parkingLot) {
+        return HistoryResponseDto.builder()
+                .startTime(history.getStartTime())
+                .endTime(history.getEndTime())
+                .parkingLotName(parkingLot.getName())
+                .build();
     }
-
 }

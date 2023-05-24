@@ -3,6 +3,7 @@ package com.team5.capstone.mju.apiserver.web.controller;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.ReservationResponseDto;
+import com.team5.capstone.mju.apiserver.web.service.HistoryService;
 import com.team5.capstone.mju.apiserver.web.service.NotificationService;
 import com.team5.capstone.mju.apiserver.web.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class ParkingLotReservationController {
     private final ReservationService reservationService;
     private final NotificationService notificationService;
+    private final HistoryService historyService;
 
     @Autowired
-    public ParkingLotReservationController(ReservationService reservationService, NotificationService notificationService) {
+    public ParkingLotReservationController(ReservationService reservationService, NotificationService notificationService, HistoryService historyService) {
         this.reservationService = reservationService;
         this.notificationService = notificationService;
+        this.historyService = historyService;
     }
 
     @Operation(summary = "예약 정보 반환 API", description = "예약 아이디를 받아 정보를 반환하는 API",
@@ -48,6 +51,7 @@ public class ParkingLotReservationController {
     public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto requestDto) throws FirebaseMessagingException {
         log.info(requestDto.toString());
         ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
+        historyService.createHistory(requestDto, Long.valueOf(responseDto.getReservationId()));
         notificationService.sendReservationSuccessPush(requestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -72,8 +76,9 @@ public class ParkingLotReservationController {
             }
     )
     @DeleteMapping("/reservation/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<String> deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
+        historyService.deleteHistory(id);
+        return ResponseEntity.ok("success");
     }
 }
