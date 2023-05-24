@@ -8,7 +8,6 @@ import com.team5.capstone.mju.apiserver.web.vo.ParkingLotPrice;
 import com.team5.capstone.mju.apiserver.web.vo.ParkingLotTime;
 import lombok.*;
 
-import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +89,7 @@ public class ParkingLotDto {
 
     public ParkingLotOwner parseToParkingLotOwner() {
         ParkingLotOwner owner = new ParkingLotOwner();
-        owner.setOwnerId(ownerId);
+        owner.setOwnerUserId(ownerId);
         owner.setInquiryPhoneNumber(phoneNumber);
         return owner;
     }
@@ -189,7 +188,7 @@ public class ParkingLotDto {
                 .totalSpace(parkingLot.getTotalSpace())
                 .imageUrl(parkingLot.getImageUrl())
                 .remainingSpace(parkingLot.getRemainingSpace())
-                .ownerId(owner.getOwnerId())
+                .ownerId(owner.getOwnerUserId())
                 .phoneNumber(owner.getInquiryPhoneNumber())
                 .availableDay(parkingLot.getAvailableDay().split(","))
                 .type(parkingLot.getCarType().split(","))

@@ -27,7 +27,7 @@ public class OwnerResponseDto {
                 .build();
 
         return OwnerResponseDto.builder()
-                .userId(owner.getOwnerId())
+                .userId(owner.getOwnerUserId())
                 .parkingLotId(owner.getParkingLotId())
                 .inquiryPhoneNumber(owner.getInquiryPhoneNumber())
                 .userInfo(userDefaultInfo)
