@@ -23,4 +23,7 @@ public class Rating {
     @Column(name = "rating_avg")
     private float ratingAvg;
 
+    @Column(name = "comment_summary")
+    private String commentSummary;
+
 }

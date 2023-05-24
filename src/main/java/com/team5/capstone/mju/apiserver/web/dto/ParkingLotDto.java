@@ -44,6 +44,9 @@ public class ParkingLotDto {
     @JsonIgnore
     private Integer ratingNum;
 
+    @JsonIgnore
+    private String reviewSummary;
+
     @JsonProperty(value = "type")
     private String[] type;
 
@@ -149,12 +152,16 @@ public class ParkingLotDto {
 
 
         Float ratingAvg = 0.0f;
-        if(rating.isPresent()) {
+        if (rating.isPresent()) {
             ratingAvg = rating.get().getRatingAvg();
         }
         Integer ratingNum = 0;
-        if(rating.isPresent()) {
+        if (rating.isPresent()) {
             ratingNum = rating.get().getRatingNum();
+        }
+        String commentSummary = null;
+        if (rating.isPresent()) {
+            commentSummary = rating.get().getCommentSummary();
         }
 
 
@@ -197,6 +204,7 @@ public class ParkingLotDto {
                 .ratingAvg(ratingAvg)
                 .ratingNum(ratingNum)
                 .time(times.toArray(new ParkingLotTime[0]))
+                .reviewSummary(commentSummary)
                 .build();
     }
 }
