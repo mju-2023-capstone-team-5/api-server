@@ -100,7 +100,7 @@ public class ParkingLotService {
         ParkingLotOwner savedOwner = ownerRepository.save(parkingLotOwner);
 
         // 더티 체킹을 통한 owner 지정
-        saved.setOwnerId(savedOwner.getOwnerUserId());
+        saved.setOwnerId(Math.toIntExact(savedOwner.getParkingLotOwnerId()));
 
         // Price를 생성해 존재하는 Price는 데이터베이스에 저장
         requestDto.parseMonthlyToParkingLotPrice()
