@@ -1,5 +1,7 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
+import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
+import com.team5.capstone.mju.apiserver.web.vo.ReservationInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,5 +32,23 @@ public class History {
 
     @Column(name = "reservation_id")
     private Integer reservationId;
+
+    public static History of(ReservationRequestDto reservationRequestDto, Long reservationId) {
+        History history = new History();
+        history.setUserId(reservationRequestDto.getUserId());
+        history.setParkingLotId(reservationRequestDto.getParkingLotId());
+        history.setReservationId(Math.toIntExact(reservationId));
+        if (reservationRequestDto.getHourly() != null) {
+            ReservationInfo hourly = reservationRequestDto.getHourly();
+            history.setStartTime(hourly.getDate());
+            history.setEndTime(hourly.getDate().plusHours(hourly.getDuration()));
+        }
+        else if (reservationRequestDto.getMonthly() != null) {
+            ReservationInfo monthly = reservationRequestDto.getMonthly();
+            history.setStartTime(monthly.getDate());
+            history.setEndTime(monthly.getDate().plusMonths(monthly.getDuration()));
+        }
+        return history;
+    }
 
 }

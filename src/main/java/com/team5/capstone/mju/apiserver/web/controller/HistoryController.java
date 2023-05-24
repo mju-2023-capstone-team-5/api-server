@@ -36,18 +36,18 @@ public class HistoryController {
         return ResponseEntity.ok(historyService.getHistoryInfo(id));
     }
 
-    @Operation(summary = "예약 내역 생성 API", description = "예약 정보를 받아 새로운 예약 정보를 생성하는 API",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "새로운 예약 정보 생성에 성공"),
-                    @ApiResponse(responseCode = "404", description = "사용자 또는 주차장 정보가 존재하지 않아 예약 정보 생성에 실패")
-            }
-    )
-    @PostMapping("/history")
-    public ResponseEntity<HistoryResponseDto> createHistory(@RequestBody HistoryRequestDto requestDto) {
-        log.info(requestDto.toString());
-        HistoryResponseDto responseDto = historyService.createHistory(requestDto);
-        return ResponseEntity.ok(responseDto);
-    }
+//    @Operation(summary = "예약 내역 생성 API", description = "예약 정보를 받아 새로운 예약 정보를 생성하는 API",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "새로운 예약 정보 생성에 성공"),
+//                    @ApiResponse(responseCode = "404", description = "사용자 또는 주차장 정보가 존재하지 않아 예약 정보 생성에 실패")
+//            }
+//    )
+//    @PostMapping("/history")
+//    public ResponseEntity<HistoryResponseDto> createHistory(@RequestBody HistoryRequestDto requestDto) {
+//        log.info(requestDto.toString());
+//        HistoryResponseDto responseDto = historyService.createHistory(requestDto);
+//        return ResponseEntity.ok(responseDto);
+//    }
 
     @Operation(summary = "예약 내역 삭제 API", description = "예약 정보 아이디를 받아 내역을 삭제하는 API",
             responses = {

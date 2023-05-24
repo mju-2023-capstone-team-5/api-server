@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.HistoryRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.HistoryResponseDto;
+import com.team5.capstone.mju.apiserver.web.dto.ReservationRequestDto;
 import com.team5.capstone.mju.apiserver.web.entity.History;
 import com.team5.capstone.mju.apiserver.web.exceptions.HistoryNotFoundException;
 import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
@@ -9,6 +10,7 @@ import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
 import com.team5.capstone.mju.apiserver.web.repository.HistoryRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
+import com.team5.capstone.mju.apiserver.web.vo.ReservationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +53,7 @@ public class HistoryService {
 
     // 이용내역 생성
     @Transactional
-    public HistoryResponseDto createHistory(HistoryRequestDto requestDto) {
+    public void createHistory(ReservationRequestDto requestDto, Long reservationId) {
 
         // History 엔티티를 데이터베이스에 저장
         userRepository.findById(Long.valueOf(requestDto.getUserId()))
@@ -60,17 +62,7 @@ public class HistoryService {
         parkingLotRepository.findById(Long.valueOf(requestDto.getParkingLotId()))
                 .orElseThrow(() -> new ParkingLotNotFoundException(requestDto.getUserId()));
 
-        History savedHistory = historyRepository.save(requestDto.ToEntity());
-
-        HistoryResponseDto responseDto = new HistoryResponseDto();
-        responseDto.setHistoryId(Math.toIntExact(savedHistory.getHistoryId()));
-        responseDto.setUserId(savedHistory.getUserId());
-        responseDto.setParkingLotId(savedHistory.getParkingLotId());
-        responseDto.setStartTime(savedHistory.getStartTime());
-        responseDto.setEndTime(savedHistory.getEndTime());
-//        responseDto.setDateUsed(savedHistory.getDateUsed());
-
-        return responseDto;
+        History savedHistory = historyRepository.save(History.of(requestDto, reservationId));
     }
 
     //이용내역 삭제
