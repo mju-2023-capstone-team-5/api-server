@@ -59,6 +59,19 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyAllParkingLots(id));
     }
 
+    @Operation(summary = "사용자가 등록한 주차장 정보 반환 API", description = "사용자의 아이디를 받아 등록한 주차장 정보 리스트를 반환하는 API",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주차장 정보 조회에 성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자의 정보가 존재하지 않아 주차장 정보 조회에 실패")
+            }
+    )
+    @GetMapping("/users/{id}/parking-lots/history")
+    // HTTP 메소드 별 URL 매핑. localhost:8080/api/v1/parking-lots/1이면 id 변수가 1
+    public ResponseEntity<List<HistoryResponseDto>> getAllParkingLotReservationHistory(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAllMyHistory(id));
+    }
+
+
     @Operation(summary = "주차장 주인 정보 반환 API", description = "owner의 아이디를 받아 주차장 주인의 정보를 반환하는 API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "owner 조회에 성공"),

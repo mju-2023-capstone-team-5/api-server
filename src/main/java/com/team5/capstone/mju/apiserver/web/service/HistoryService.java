@@ -35,23 +35,6 @@ public class HistoryService {
         this.parkingLotRepository = parkingLotRepository;
     }
 
-    @Transactional
-    public HistoryResponseDto getHistoryInfo(Long id) {
-        History found = historyRepository.findById(id)
-                .orElseThrow(() -> new HistoryNotFoundException(id));
-
-        HistoryResponseDto dto = HistoryResponseDto.builder()
-                .historyId(Math.toIntExact(found.getHistoryId()))
-                .userId(found.getUserId())
-                .parkingLotId(found.getParkingLotId())
-                .startTime(found.getStartTime())
-                .endTime(found.getEndTime())
-//                .dateUsed(found.getDateUsed())
-                .build();
-
-        return dto;
-    }
-
     // 이용내역 생성
     @Transactional
     public void createHistory(ReservationRequestDto requestDto, Long reservationId) {

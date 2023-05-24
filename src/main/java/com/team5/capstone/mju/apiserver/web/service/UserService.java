@@ -1,17 +1,11 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
 import com.team5.capstone.mju.apiserver.web.dto.*;
-import com.team5.capstone.mju.apiserver.web.entity.ParkingLotOwner;
-import com.team5.capstone.mju.apiserver.web.entity.User;
-import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
-import com.team5.capstone.mju.apiserver.web.entity.UserPoint;
+import com.team5.capstone.mju.apiserver.web.entity.*;
 import com.team5.capstone.mju.apiserver.web.enums.UserDefaultPoint;
 import com.team5.capstone.mju.apiserver.web.enums.UserPayReceiptType;
 import com.team5.capstone.mju.apiserver.web.exceptions.*;
-import com.team5.capstone.mju.apiserver.web.repository.ParkingLotOwnerRepository;
-import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
-import com.team5.capstone.mju.apiserver.web.repository.UserPointRepository;
-import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
+import com.team5.capstone.mju.apiserver.web.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +20,20 @@ public class UserService {
     private final ParkingLotOwnerRepository ownerRepository;
     private final UserPointRepository userPointRepository;
     private final UserPayReceiptRepository userPayReceiptRepository;
+    private final HistoryRepository historyRepository;
 
     private final ParkingLotService parkingLotService;
+    private final ParkingLotRepository parkingLotRepository;
 
-    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, UserPayReceiptRepository userPayReceiptRepository, ParkingLotService parkingLotService) {
+    public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, UserPayReceiptRepository userPayReceiptRepository, HistoryRepository historyRepository, ParkingLotService parkingLotService,
+                       ParkingLotRepository parkingLotRepository) {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
         this.userPointRepository = userPointRepository;
         this.userPayReceiptRepository = userPayReceiptRepository;
+        this.historyRepository = historyRepository;
         this.parkingLotService = parkingLotService;
+        this.parkingLotRepository = parkingLotRepository;
     }
 
     @Transactional(readOnly = true)
@@ -182,4 +181,16 @@ public class UserService {
         return "success";
     }
 
+    @Transactional(readOnly = true)
+    public List<HistoryResponseDto> getAllMyHistory(Long userId) {
+        List<History> all = historyRepository.findAllByUserId(Math.toIntExact(userId));
+
+        List<HistoryResponseDto> responseDtos = new ArrayList<>();
+        all.forEach(history -> {
+            ParkingLot parkingLot = parkingLotRepository.findById(Long.valueOf(history.getParkingLotId())).get();
+            responseDtos.add(HistoryResponseDto.of(history, parkingLot));
+        });
+
+        return responseDtos;
+    }
 }
