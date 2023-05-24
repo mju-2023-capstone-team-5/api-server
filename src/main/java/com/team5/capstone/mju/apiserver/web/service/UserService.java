@@ -80,7 +80,7 @@ public class UserService {
         User found = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        List<ParkingLotOwner> all = ownerRepository.findAllByOwnerId(Math.toIntExact(id));
+        List<ParkingLotOwner> all = ownerRepository.findAllByOwnerUserId(Math.toIntExact(id));
 
         List<ParkingLotResponseDto> resultDtos = new ArrayList<>();
 
