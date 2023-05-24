@@ -57,3 +57,5 @@ extends:
   jwt-secret: ${JWT_SECRET_KEY}
   firebase:
     admin-key-path: ${FIREBASE_ADMIN_KEY_PATH}
+  openai:
+    private-api-key: ${OPENAI_PRIVATE_API_KEY}
