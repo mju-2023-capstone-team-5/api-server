@@ -1,6 +1,5 @@
 package com.team5.capstone.mju.apiserver.web.entity;
 
-import com.team5.capstone.mju.apiserver.web.dto.ParkingLotDto;
 import com.team5.capstone.mju.apiserver.web.dto.ParkingLotRequestOldDto;
 import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import lombok.Getter;
@@ -92,5 +91,13 @@ public class ParkingLot {
 
     public void returnSpace() {
         this.remainingSpace++;
+    }
+
+    public void checkRemainingAndUpdateStatusToNoParkingSelf() {
+        if (this.remainingSpace.equals(0)) this.status = ParkingLotStatus.NO_PARKING.getStatus();
+    }
+
+    public void checkRemainingAndUpdateStatusToParkingAvailableSelf() {
+        if (this.remainingSpace != 0) this.status = ParkingLotStatus.PARKING_AVAILABLE.getStatus();
     }
 }

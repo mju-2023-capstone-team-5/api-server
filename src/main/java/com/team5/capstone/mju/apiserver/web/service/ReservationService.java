@@ -7,16 +7,16 @@ import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
 import com.team5.capstone.mju.apiserver.web.exceptions.*;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ReservationService {
@@ -107,5 +107,14 @@ public class ReservationService {
         foundParkingLot.returnSpace();
 
         reservationRepository.delete(found);
+    }
+
+    @Scheduled(cron = "* * * * * *")
+    @Transactional
+    public void statusChangeWhenReservationEnded() {
+        parkingLotRepository.findAllByStatus(ParkingLotStatus.PARKING_AVAILABLE.getStatus())
+                .forEach(ParkingLot::checkRemainingAndUpdateStatusToNoParkingSelf);
+        parkingLotRepository.findAllByStatus(ParkingLotStatus.NO_PARKING.getStatus())
+                .forEach(ParkingLot::checkRemainingAndUpdateStatusToParkingAvailableSelf);
     }
 }
