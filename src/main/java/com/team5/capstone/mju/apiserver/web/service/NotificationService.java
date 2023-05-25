@@ -57,8 +57,10 @@ public class NotificationService {
                 .get()
                 .getFcmToken();
 
-        Message message = buildFireBaseMessage("내 주차장 예약 알림", "사용자의 주차장 예약이 완료되었습니다.", fcmToken);
-        String response = FirebaseMessaging.getInstance().send(message);
+        if (fcmToken != null) {
+            Message message = buildFireBaseMessage("내 주차장 예약 알림", "사용자의 주차장 예약이 완료되었습니다.", fcmToken);
+            String response = FirebaseMessaging.getInstance().send(message);
+        }
         return "success";
     }
 
@@ -77,9 +79,10 @@ public class NotificationService {
                 .get()
                 .getFcmToken();
 
-        Message message = buildFireBaseMessage("토지대장 허가 확인 알림", "사용자의 주차장 등록 요청이 허가되었습니다.", fcmToken);
-        String response = FirebaseMessaging.getInstance().send(message);
-
+        if (fcmToken != null) {
+            Message message = buildFireBaseMessage("토지대장 허가 확인 알림", "사용자의 주차장 등록 요청이 허가되었습니다.", fcmToken);
+            String response = FirebaseMessaging.getInstance().send(message);
+        }
         return "success";
     }
 
@@ -100,12 +103,14 @@ public class NotificationService {
                 String fcmToken = userRepository.findById(Long.valueOf(reservation.getUserId()))
                         .get()
                         .getFcmToken();
+                if (fcmToken != null) {
 
-                Message message = buildFireBaseMessage("예약 시간 5분 전 알림", "사용자가 예약한 주차장의 예약 시작 시간이 5분 남았습니다.", fcmToken);
-                try {
-                    String response = FirebaseMessaging.getInstance().send(message);
-                } catch (FirebaseMessagingException e) {
-                    throw new RuntimeException(e);
+                    Message message = buildFireBaseMessage("예약 시간 5분 전 알림", "사용자가 예약한 주차장의 예약 시작 시간이 5분 남았습니다.", fcmToken);
+                    try {
+                        String response = FirebaseMessaging.getInstance().send(message);
+                    } catch (FirebaseMessagingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -139,12 +144,14 @@ public class NotificationService {
                 String fcmToken = userRepository.findById(Long.valueOf(reservation.getUserId()))
                         .get()
                         .getFcmToken();
+                if (fcmToken != null) {
 
-                Message message = buildFireBaseMessage("예약 만료 시간 5분 전 알림", "사용자가 예약한 주차장의 예약 만료 시간이 5분 남았습니다.", fcmToken);
-                try {
-                    String response = FirebaseMessaging.getInstance().send(message);
-                } catch (FirebaseMessagingException e) {
-                    throw new RuntimeException(e);
+                    Message message = buildFireBaseMessage("예약 만료 시간 5분 전 알림", "사용자가 예약한 주차장의 예약 만료 시간이 5분 남았습니다.", fcmToken);
+                    try {
+                        String response = FirebaseMessaging.getInstance().send(message);
+                    } catch (FirebaseMessagingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
