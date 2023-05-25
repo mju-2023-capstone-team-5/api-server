@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -26,7 +28,7 @@ public class Reservation {
     private Integer parkingLotId;
 
     @Column(name = "duration")
-    private Integer duration;
+    private String duration;
 
     @Column(name = "price")
     private Integer price;
@@ -49,12 +51,12 @@ public class Reservation {
         else if (requestDto.getMonthly() != null) {
             this.setDateType(ParkingLotPriceType.MONTH.getType());
             this.setDate(requestDto.getMonthly().getDate());
-            this.setDuration(requestDto.getMonthly().getDuration());
+            this.setDuration(String.valueOf(requestDto.getMonthly().getDuration()[0]));
         }
         else if (requestDto.getHourly() != null) {
             this.setDateType(ParkingLotPriceType.HOUR.getType());
             this.setDate(requestDto.getHourly().getDate());
-            this.setDuration(requestDto.getHourly().getDuration());
+            this.setDuration(Arrays.stream(requestDto.getHourly().getDuration()).mapToObj(String::valueOf).collect(Collectors.joining(",")));
         }
         this.setPrice(requestDto.getPrice());
     }

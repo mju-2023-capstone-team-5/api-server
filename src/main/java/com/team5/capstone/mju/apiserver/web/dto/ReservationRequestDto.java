@@ -12,6 +12,8 @@ import lombok.*;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @ToString
 @Getter
@@ -40,12 +42,12 @@ public class ReservationRequestDto {
         else if (monthly != null) {
             reservation.setDateType(ParkingLotPriceType.MONTH.getType());
             reservation.setDate(monthly.getDate());
-            reservation.setDuration(monthly.getDuration());
+            reservation.setDuration(String.valueOf(monthly.getDuration()[0]));
         }
         else if (hourly != null) {
             reservation.setDateType(ParkingLotPriceType.HOUR.getType());
             reservation.setDate(hourly.getDate());
-            reservation.setDuration(hourly.getDuration());
+            reservation.setDuration(Arrays.stream(hourly.getDuration()).mapToObj(String::valueOf).collect(Collectors.joining(",")));
         }
         return reservation;
     }

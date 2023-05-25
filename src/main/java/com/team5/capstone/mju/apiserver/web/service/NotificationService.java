@@ -126,12 +126,12 @@ public class NotificationService {
             LocalDateTime targetDate = null;
             if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
                 targetDate = reservation.getDate()
-                        .plusHours(reservation.getDuration())
+                        .plusHours(reservation.getDuration().length())
                         .minusMinutes(6);
             }
             else {
                 targetDate = reservation.getDate()
-                        .plusMonths(reservation.getDuration())
+                        .plusMonths(Integer.parseInt(reservation.getDuration()))
                         .minusMinutes(6);
             }
 

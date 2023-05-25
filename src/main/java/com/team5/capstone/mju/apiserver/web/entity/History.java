@@ -41,12 +41,12 @@ public class History {
         if (reservationRequestDto.getHourly() != null) {
             ReservationInfo hourly = reservationRequestDto.getHourly();
             history.setStartTime(hourly.getDate());
-            history.setEndTime(hourly.getDate().plusHours(hourly.getDuration()));
+            history.setEndTime(hourly.getDate().plusHours(hourly.getDuration().length));
         }
         else if (reservationRequestDto.getMonthly() != null) {
             ReservationInfo monthly = reservationRequestDto.getMonthly();
             history.setStartTime(monthly.getDate());
-            history.setEndTime(monthly.getDate().plusMonths(monthly.getDuration()));
+            history.setEndTime(monthly.getDate().plusMonths(monthly.getDuration()[0]));
         }
         return history;
     }
