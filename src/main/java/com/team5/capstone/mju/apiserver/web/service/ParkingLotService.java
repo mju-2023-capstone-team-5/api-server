@@ -192,6 +192,12 @@ public class ParkingLotService {
     public void deleteParkingLot(Long id) {
         ParkingLot found = parkingLotRepository.findById(id)
                 .orElseThrow(() -> new ParkingLotNotFoundException(id));
+
+        ParkingLotOwner foundOwner = ownerRepository.findById(Long.valueOf(found.getOwnerId()))
+                .orElseThrow(() -> new OwnerNotFoundException(found.getOwnerId()));
+
+        ownerRepository.delete(foundOwner);
+
         parkingLotRepository.delete(found);
     }
 
