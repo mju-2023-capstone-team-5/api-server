@@ -1,5 +1,6 @@
 package com.team5.capstone.mju.apiserver.web.controller;
 
+import com.team5.capstone.mju.apiserver.web.dto.FaQDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.CustomerSupportService;
@@ -72,6 +73,11 @@ public class CustomerSupportController {
     public ResponseEntity<Void> deleteQna(@PathVariable Long id) {
         customerSupportService.deleteQna(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/faqs")
+    public ResponseEntity<List<FaQDto>> getAllFaQ() {
+        return ResponseEntity.ok(customerSupportService.getAllFaQ());
     }
 
 }

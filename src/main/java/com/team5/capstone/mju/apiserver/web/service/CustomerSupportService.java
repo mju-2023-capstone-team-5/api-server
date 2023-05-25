@@ -1,11 +1,14 @@
 package com.team5.capstone.mju.apiserver.web.service;
 
+import com.team5.capstone.mju.apiserver.web.dto.FaQDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.QnaResponseDto;
+import com.team5.capstone.mju.apiserver.web.entity.Faq;
 import com.team5.capstone.mju.apiserver.web.entity.Qna;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.exceptions.QnANotFoundException;
 import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
+import com.team5.capstone.mju.apiserver.web.repository.FaqRepository;
 import com.team5.capstone.mju.apiserver.web.repository.QnaRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
@@ -29,13 +31,15 @@ public class CustomerSupportService {
 
     // Repository 객체
     private final QnaRepository qnaRepository;
+    private final FaqRepository faqRepository;
 
 
     @Autowired // 생성자를 통한 의존성 주입
-    public CustomerSupportService(QnaRepository qnaRepository, JavaMailSender mailSender, UserRepository userRepository) {
+    public CustomerSupportService(QnaRepository qnaRepository, JavaMailSender mailSender, UserRepository userRepository, FaqRepository faqRepository) {
         this.qnaRepository = qnaRepository;
         this.mailSender = mailSender;
         this.userRepository = userRepository;
+        this.faqRepository = faqRepository;
     }
 
     @Transactional(readOnly = true)
@@ -102,5 +106,12 @@ public class CustomerSupportService {
                 .orElseThrow(() -> new QnANotFoundException(id));
 
         qnaRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FaQDto> getAllFaQ() {
+        List<Faq> all = faqRepository.findAll();
+        List<FaQDto> faQDtos = all.stream().map(FaQDto::of).collect(Collectors.toList());
+        return faQDtos;
     }
 }
