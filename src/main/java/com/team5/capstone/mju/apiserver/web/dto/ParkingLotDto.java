@@ -47,6 +47,9 @@ public class ParkingLotDto {
     @JsonIgnore
     private String reviewSummary;
 
+    @JsonIgnore
+    private String status;
+
     @JsonProperty(value = "type")
     private String[] type;
 
@@ -205,6 +208,7 @@ public class ParkingLotDto {
                 .ratingNum(ratingNum)
                 .time(times.toArray(new ParkingLotTime[0]))
                 .reviewSummary(commentSummary)
+                .status(parkingLot.getStatus())
                 .build();
     }
 }

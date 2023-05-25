@@ -210,4 +210,13 @@ public class ParkingLotService {
                 }
         );
     }
+
+    @Scheduled(cron = "* * * * * *")
+    @Transactional
+    public void statusChangeWhenRemainingSpaceChanged() {
+        parkingLotRepository.findAllByStatus(ParkingLotStatus.PARKING_AVAILABLE.getStatus())
+                .forEach(ParkingLot::checkRemainingAndUpdateStatusToNoParkingSelf);
+        parkingLotRepository.findAllByStatus(ParkingLotStatus.NO_PARKING.getStatus())
+                .forEach(ParkingLot::checkRemainingAndUpdateStatusToParkingAvailableSelf);
+    }
 }

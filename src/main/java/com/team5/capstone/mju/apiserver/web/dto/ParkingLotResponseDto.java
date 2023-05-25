@@ -47,6 +47,9 @@ public class ParkingLotResponseDto {
     @JsonProperty(value = "type")
     private String[] type;
 
+    @JsonProperty(value = "status")
+    private String status;
+
     @JsonProperty(value = "availableDay")
     private String[] availableDay;
 
@@ -82,6 +85,7 @@ public class ParkingLotResponseDto {
                 .ratingNum(parkingLotDto.getRatingNum())
                 .imageUrl(parkingLotDto.getImageUrl()) // 응답 데이터로 추가
                 .reviewSummary(parkingLotDto.getReviewSummary())
+                .status(parkingLotDto.getStatus())
                 .build();
     }
 
