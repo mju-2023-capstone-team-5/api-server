@@ -109,12 +109,4 @@ public class ReservationService {
         reservationRepository.delete(found);
     }
 
-    @Scheduled(cron = "* * * * * *")
-    @Transactional
-    public void statusChangeWhenReservationEnded() {
-        parkingLotRepository.findAllByStatus(ParkingLotStatus.PARKING_AVAILABLE.getStatus())
-                .forEach(ParkingLot::checkRemainingAndUpdateStatusToNoParkingSelf);
-        parkingLotRepository.findAllByStatus(ParkingLotStatus.NO_PARKING.getStatus())
-                .forEach(ParkingLot::checkRemainingAndUpdateStatusToParkingAvailableSelf);
-    }
 }
