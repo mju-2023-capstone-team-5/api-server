@@ -10,6 +10,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -36,12 +39,18 @@ public class ReservationResponseDto {
         if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
             hourly = new ReservationInfo();
             hourly.setDate(reservation.getDate());
-            hourly.setDuration(reservation.getDuration());
+
+            String[] splited = reservation.getDuration().split(",");
+            List<Integer> integerList = Arrays.stream(splited).map(d -> Integer.parseInt(d)).collect(Collectors.toList());
+            int[] intList = new int[integerList.size()];
+            for(int i = 0; i < integerList.size(); i++) intList[i] = integerList.get(i);
+            hourly.setDuration(intList);
+
         }
         else if (reservation.getDateType().equals(ParkingLotPriceType.MONTH.getType())) {
             monthly = new ReservationInfo();
             monthly.setDate(reservation.getDate());
-            monthly.setDuration(reservation.getDuration());
+            monthly.setDuration(new int[]{Integer.parseInt(reservation.getDuration())});
         }
 
 

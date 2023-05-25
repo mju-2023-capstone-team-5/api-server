@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationInfo {
     private LocalDateTime date;
-    private int duration;
+    private int[] duration;
 }

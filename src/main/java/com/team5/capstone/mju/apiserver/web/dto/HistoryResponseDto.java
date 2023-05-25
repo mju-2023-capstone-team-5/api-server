@@ -13,12 +13,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class HistoryResponseDto {
+    private Long reservationId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String parkingLotName;
 
     public static HistoryResponseDto of(History history, ParkingLot parkingLot) {
         return HistoryResponseDto.builder()
+                .reservationId(Long.valueOf(history.getReservationId()))
                 .startTime(history.getStartTime())
                 .endTime(history.getEndTime())
                 .parkingLotName(parkingLot.getName())
