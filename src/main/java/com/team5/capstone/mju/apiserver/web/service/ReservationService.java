@@ -7,10 +7,7 @@ import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
-import com.team5.capstone.mju.apiserver.web.exceptions.ParkingLotNotFoundException;
-import com.team5.capstone.mju.apiserver.web.exceptions.PayReceiptNotFoundException;
-import com.team5.capstone.mju.apiserver.web.exceptions.ReservationNotFoundException;
-import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
+import com.team5.capstone.mju.apiserver.web.exceptions.*;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
 import com.team5.capstone.mju.apiserver.web.repository.UserPayReceiptRepository;
@@ -57,6 +54,10 @@ public class ReservationService {
         User foundUser = userRepository.findById(Long.valueOf(requestDto.getUserId()))
                 .orElseThrow(() -> new UserNotFoundException(requestDto.getUserId()));
 
+        if (foundParkingLot.getRemainingSpace() == 0)
+            throw new ParkingLotFullException(foundParkingLot.getParkingLotId());
+        else foundParkingLot.useSpace();
+
         UserPointReceiptResponseDto usedDto = userService.usePoint(foundUser.getUserid(), Long.valueOf(requestDto.getPrice()));
         UserPointReceiptResponseDto earnedDto = userService.earnPointToOwner(Long.valueOf(foundParkingLot.getOwnerId()), Long.valueOf(requestDto.getPrice()));
 
@@ -99,6 +100,11 @@ public class ReservationService {
 
         // 판매자가 얻은 포인트 보구
         userService.cancelEarnPoint(Long.valueOf(ownerPaidReceipt.getUserId()), ownerPaidReceipt.getAmount());
+
+        // 주차장 남은 공간 복구
+        ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(found.getParkingLotId()))
+                .get();
+        foundParkingLot.returnSpace();
 
         reservationRepository.delete(found);
     }

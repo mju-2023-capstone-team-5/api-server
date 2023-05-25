@@ -85,4 +85,12 @@ public class ParkingLot {
     public void updateStatusToParkingAvailableSelf() {
         if (this.status.equals(ParkingLotStatus.WAIT.getStatus())) this.status = ParkingLotStatus.PARKING_AVAILABLE.getStatus();
     }
+
+    public void useSpace() {
+        this.remainingSpace--;
+    }
+
+    public void returnSpace() {
+        this.remainingSpace++;
+    }
 }
