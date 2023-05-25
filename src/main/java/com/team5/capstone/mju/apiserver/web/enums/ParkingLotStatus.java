@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum ParkingLotStatus {
     WAIT("허가대기"),
     PARKING_AVAILABLE("주차가능"),
-    PARKED("주차중");
+    NO_PARKING("주차불가");
     @Getter
     private String status;
 }
