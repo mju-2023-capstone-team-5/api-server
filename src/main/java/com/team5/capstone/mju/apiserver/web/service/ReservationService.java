@@ -7,7 +7,8 @@ import com.team5.capstone.mju.apiserver.web.entity.ParkingLot;
 import com.team5.capstone.mju.apiserver.web.entity.Reservation;
 import com.team5.capstone.mju.apiserver.web.entity.User;
 import com.team5.capstone.mju.apiserver.web.entity.UserPayReceipt;
-import com.team5.capstone.mju.apiserver.web.enums.ParkingLotStatus;
+import com.team5.capstone.mju.apiserver.web.enums.ParkingLotPriceType;
+import com.team5.capstone.mju.apiserver.web.enums.UserPayReceiptType;
 import com.team5.capstone.mju.apiserver.web.exceptions.*;
 import com.team5.capstone.mju.apiserver.web.repository.ParkingLotRepository;
 import com.team5.capstone.mju.apiserver.web.repository.ReservationRepository;
@@ -17,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Service // 서비스 레이어임을 알리는 어노테이션. 이 어노테이션을 붙이면 Service 클래스는 스프링이 Bean으로 관리
 public class ReservationService {
@@ -82,7 +87,7 @@ public class ReservationService {
 
     // 예약정보 삭제
     @Transactional
-    public void deleteReservation(Long id) {
+    public void cancelReservation(Long id) {
         Reservation found = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));
 
@@ -109,4 +114,24 @@ public class ReservationService {
         reservationRepository.delete(found);
     }
 
+    @Scheduled(cron = "* * * * * *")
+    @Transactional
+    public void changeStatusWhenReservationEnded() {
+        List<Reservation> all = reservationRepository.findAll();
+        all.forEach(reservation -> {
+            LocalDateTime endTime = null;
+            if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
+                endTime = reservation.getDate().plusHours(Arrays.stream(reservation.getDuration().split(",")).map(d -> Integer.parseInt(d)).mapToInt(d -> d).max().getAsInt());
+            }
+            else {
+                endTime = reservation.getDate().plusMonths(Long.parseLong(reservation.getDuration()));
+            }
+            if (endTime.isBefore(LocalDateTime.now())) {
+                ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(reservation.getParkingLotId()))
+                        .get();
+                foundParkingLot.returnSpace();
+                reservationRepository.delete(reservation);
+            }
+        });
+    }
 }
