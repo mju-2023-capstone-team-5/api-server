@@ -4,6 +4,7 @@ import com.team5.capstone.mju.apiserver.web.dto.GradeRequestDto;
 import com.team5.capstone.mju.apiserver.web.dto.GradeResponseDto;
 import com.team5.capstone.mju.apiserver.web.service.GradeService;
 import com.team5.capstone.mju.apiserver.web.service.RatingService;
+import com.team5.capstone.mju.apiserver.web.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,10 +21,12 @@ import java.util.List;
 public class GradeController {
     private final GradeService gradeService;
     private final RatingService ratingService;
+    private final ReservationService reservationService;
 
-    public GradeController(GradeService gradeService, RatingService ratingService) {
+    public GradeController(GradeService gradeService, RatingService ratingService, ReservationService reservationService) {
         this.gradeService = gradeService;
         this.ratingService = ratingService;
+        this.reservationService = reservationService;
     }
 
 
@@ -60,8 +63,12 @@ public class GradeController {
         log.info(requestDto.toString());
         GradeResponseDto responseDto = gradeService.createGrade(requestDto);
 
+        // 후기 작성 유무 업데이트
+        reservationService.updateReviewWritten(Long.valueOf(requestDto.getReservationId()));
+
         // 주차장 평점 업데이트
         ratingService.updateRating(requestDto.getParkingLotId(), requestDto.getRating());
+
 
         return ResponseEntity.ok(responseDto);
     }

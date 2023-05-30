@@ -50,6 +50,7 @@ public class ReservationRequestDto {
             reservation.setDuration(Arrays.stream(hourly.getDuration()).mapToObj(String::valueOf).collect(Collectors.joining(",")));
         }
         reservation.setIsReturned(false);
+        reservation.setIsReviewWritten(false);
         return reservation;
     }
 }

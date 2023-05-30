@@ -46,6 +46,9 @@ public class Reservation {
     @Column(name = "is_returned")
     private Boolean isReturned;
 
+    @Column(name = "is_review_written")
+    private Boolean isReviewWritten;
+
 
     public void updateAllInfoSelf(ReservationRequestDto requestDto) throws EntityNotFoundException {
         this.setUserId(requestDto.getUserId());

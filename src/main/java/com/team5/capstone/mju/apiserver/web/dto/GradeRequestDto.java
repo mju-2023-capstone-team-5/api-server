@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class GradeRequestDto {
     private int userId;
     private int parkingLotId;
+    private int reservationId;
     private Float rating;
     private String comment;
     private LocalDateTime timestamp;
