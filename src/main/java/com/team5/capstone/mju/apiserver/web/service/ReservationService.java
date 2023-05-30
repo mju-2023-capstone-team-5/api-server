@@ -114,6 +114,14 @@ public class ReservationService {
         reservationRepository.delete(found);
     }
 
+    @Transactional
+    public void updateReviewWritten(Long id) {
+        Reservation found = reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException(id));
+
+        found.setIsReviewWritten(true);
+    }
+
     @Scheduled(cron = "* * * * * *")
     @Transactional
     public void changeStatusWhenReservationEnded() {
