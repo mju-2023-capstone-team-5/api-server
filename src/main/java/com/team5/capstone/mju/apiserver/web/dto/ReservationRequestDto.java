@@ -49,6 +49,7 @@ public class ReservationRequestDto {
             reservation.setDate(hourly.getDate());
             reservation.setDuration(Arrays.stream(hourly.getDuration()).mapToObj(String::valueOf).collect(Collectors.joining(",")));
         }
+        reservation.setIsReturned(false);
         return reservation;
     }
 }
