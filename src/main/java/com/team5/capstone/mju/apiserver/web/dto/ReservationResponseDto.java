@@ -26,6 +26,9 @@ public class ReservationResponseDto {
     private int parkingLotId;
     private int price;
 
+    @JsonProperty(value = "isReviewWritten")
+    private boolean isReviewWritten;
+
     @JsonProperty(value = "monthlyReservation")
     private ReservationInfo monthly;
 
@@ -61,6 +64,7 @@ public class ReservationResponseDto {
                 .price(reservation.getPrice())
                 .hourly(hourly)
                 .monthly(monthly)
+                .isReviewWritten(reservation.getIsReviewWritten())
                 .build();
     }
 
