@@ -8,7 +8,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect # mysql 버전을 따라가는 Hibernate 구현체 문법 설정
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
   servlet: # multipartFile 용량 늘려주는 설정
     multipart:
       max-file-size: 100MB

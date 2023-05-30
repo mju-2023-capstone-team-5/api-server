@@ -117,7 +117,7 @@ public class ReservationService {
     @Scheduled(cron = "* * * * * *")
     @Transactional
     public void changeStatusWhenReservationEnded() {
-        List<Reservation> all = reservationRepository.findAll();
+        List<Reservation> all = reservationRepository.findAllByIsReturned(false);
         all.forEach(reservation -> {
             LocalDateTime endTime = null;
             if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
@@ -130,7 +130,7 @@ public class ReservationService {
                 ParkingLot foundParkingLot = parkingLotRepository.findById(Long.valueOf(reservation.getParkingLotId()))
                         .get();
                 foundParkingLot.returnSpace();
-                reservationRepository.delete(reservation);
+                reservation.setIsReturned(true);
             }
         });
     }

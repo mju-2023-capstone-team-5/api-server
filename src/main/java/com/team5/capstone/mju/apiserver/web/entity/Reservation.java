@@ -43,6 +43,9 @@ public class Reservation {
     @Column(name = "pay_receipt_ids", columnDefinition = "TEXT")
     private String payReceiptIds;
 
+    @Column(name = "is_returned")
+    private Boolean isReturned;
+
 
     public void updateAllInfoSelf(ReservationRequestDto requestDto) throws EntityNotFoundException {
         this.setUserId(requestDto.getUserId());
