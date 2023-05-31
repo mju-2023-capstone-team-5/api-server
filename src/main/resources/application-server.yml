@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource: # 데이터베이스 연결 관련
-    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?useUnicode=true&characterEncoding=utf8
     # 데이터베이스 접속 url
     # host == 아이피
     # db_databasename == 데이터베이스 이름
