@@ -24,9 +24,11 @@ public class UserService {
 
     private final ParkingLotService parkingLotService;
     private final ParkingLotRepository parkingLotRepository;
+    private final ReservationRepository reservationRepository;
 
     public UserService(UserRepository userRepository, ParkingLotOwnerRepository ownerRepository, UserPointRepository userPointRepository, UserPayReceiptRepository userPayReceiptRepository, HistoryRepository historyRepository, ParkingLotService parkingLotService,
-                       ParkingLotRepository parkingLotRepository) {
+                       ParkingLotRepository parkingLotRepository,
+                       ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
         this.ownerRepository = ownerRepository;
         this.userPointRepository = userPointRepository;
@@ -34,6 +36,7 @@ public class UserService {
         this.historyRepository = historyRepository;
         this.parkingLotService = parkingLotService;
         this.parkingLotRepository = parkingLotRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Transactional(readOnly = true)
@@ -188,7 +191,8 @@ public class UserService {
         List<HistoryResponseDto> responseDtos = new ArrayList<>();
         all.forEach(history -> {
             ParkingLot parkingLot = parkingLotRepository.findById(Long.valueOf(history.getParkingLotId())).get();
-            responseDtos.add(HistoryResponseDto.of(history, parkingLot));
+            Reservation foundReservation = reservationRepository.findById(Long.valueOf(history.getReservationId())).get();
+            responseDtos.add(HistoryResponseDto.of(history, parkingLot, foundReservation));
         });
 
         return responseDtos;
