@@ -5,6 +5,11 @@ spring:
     charset: UTF-8
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect # mysql 버전을 따라가는 Hibernate 구현체 문법 설정
     hibernate:
