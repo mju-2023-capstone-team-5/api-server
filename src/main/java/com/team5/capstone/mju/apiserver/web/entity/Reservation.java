@@ -39,8 +39,7 @@ public class Reservation {
     @Column(name = "date_type")
     private String dateType;
 
-    @Lob
-    @Column(name = "pay_receipt_ids", columnDefinition = "TEXT")
+    @Column(name = "pay_receipt_ids")
     private String payReceiptIds;
 
     @Column(name = "is_returned")
