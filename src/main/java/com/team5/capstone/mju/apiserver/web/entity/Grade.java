@@ -26,8 +26,7 @@ public class Grade {
     @Column(name = "rating")
     private Float rating;
 
-    @Lob
-    @Column(name = "comment", columnDefinition = "TEXT")
+    @Column(name = "comment")
     private String comment;
 
     @Column(name = "timestamp")

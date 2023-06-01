@@ -17,12 +17,10 @@ public class Announcement {
     @Column(name = "announcement_id", nullable = false, columnDefinition = "int")
     private Long announcementId;
 
-    @Lob
-    @Column(name = "title", columnDefinition = "TEXT")
+    @Column(name = "title")
     private String title;
 
-    @Lob
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content")
     private String content;
 
     @Column(name = "timestamp")

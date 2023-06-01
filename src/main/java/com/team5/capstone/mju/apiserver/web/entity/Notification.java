@@ -19,8 +19,7 @@ public class Notification {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Lob
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content")
     private String content;
 
     @Column(name = "date_sent")

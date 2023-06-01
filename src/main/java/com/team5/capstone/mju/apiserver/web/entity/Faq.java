@@ -16,12 +16,11 @@ public class Faq {
     @Column(name = "faq_id", nullable = false, columnDefinition = "int")
     private Long faqId;
 
-    @Column(name = "question", columnDefinition = "TEXT")
-    @Lob // Text 타입을 매칭할 때 사용, 뜻은: Large object
+    @Column(name = "question")
+    //@Lob // Text 타입을 매칭할 때 사용, 뜻은: Large object
     private String question;
 
-    @Lob
-    @Column(name = "answer", columnDefinition = "TEXT")
+    @Column(name = "answer")
     private String answer;
 
 }

@@ -24,12 +24,10 @@ public class Qna {
     @Column(name = "title")
     private String title;
 
-    @Lob
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content")
     private String content;
 
-    @Lob
-    @Column(name = "answer", columnDefinition = "TEXT")
+    @Column(name = "answer")
     private String answer;
 
     @Column(name = "date_asked")

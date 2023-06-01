@@ -22,8 +22,7 @@ public class Declaration {
     @Column(name = "declaration_time")
     private LocalDateTime declarationTime;
 
-    @Lob
-    @Column(name = "declaration_detail", columnDefinition = "TEXT")
+    @Column(name = "declaration_detail")
     private String declarationDetail;
 
 }

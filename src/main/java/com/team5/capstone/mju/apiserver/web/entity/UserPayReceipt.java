@@ -21,8 +21,7 @@ public class UserPayReceipt {
     @Column(name = "amount")
     private Long amount;
 
-    @Lob
-    @Column(name = "payment_type", columnDefinition = "TEXT")
+    @Column(name = "payment_type")
     private String paymentType;
 
 }
