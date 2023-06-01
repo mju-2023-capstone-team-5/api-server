@@ -96,10 +96,10 @@ public class NotificationService {
     public void sendBeforeReservationTime() {
         List<Reservation> all = reservationRepository.findAll();
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
 
         all.forEach(reservation -> {
-            if (now.isEqual(reservation.getDate().minusMinutes(5))) {
+            if (now.isEqual(reservation.getDate().minusMinutes(5).withSecond(0).withNano(0))) {
                 String fcmToken = userRepository.findById(Long.valueOf(reservation.getUserId()))
                         .get()
                         .getFcmToken();
@@ -125,19 +125,23 @@ public class NotificationService {
     public void sendBeforeEndReservationTime() {
         List<Reservation> all = reservationRepository.findAll();
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
 
         all.forEach(reservation -> {
             LocalDateTime targetDate = null;
             if (reservation.getDateType().equals(ParkingLotPriceType.HOUR.getType())) {
                 targetDate = reservation.getDate()
                         .plusHours(reservation.getDuration().length())
-                        .minusMinutes(5);
+                        .minusMinutes(5)
+                        .withSecond(0)
+                        .withNano(0);
             }
             else {
                 targetDate = reservation.getDate()
                         .plusMonths(Integer.parseInt(reservation.getDuration()))
-                        .minusMinutes(5);
+                        .minusMinutes(5)
+                        .withSecond(0)
+                        .withNano(0);
             }
 
             if (now.isEqual(targetDate)) {
