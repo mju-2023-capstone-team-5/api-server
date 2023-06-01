@@ -5,6 +5,7 @@ import com.team5.capstone.mju.apiserver.web.entity.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Repository

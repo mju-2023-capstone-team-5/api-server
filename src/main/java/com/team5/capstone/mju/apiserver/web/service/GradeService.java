@@ -92,27 +92,29 @@ public class GradeService {
         gradeRepository.deleteById(id);
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
     @Transactional
-    public void summaryReviewWithChatGPT() {
-        List<Rating> all = ratingRepository.findAll();
-        List<Rating> found = all.stream().filter(rating -> rating.getRatingNum() > 5)
-                .collect(Collectors.toList());
+    public void summaryReviewWithChatGPT(Integer parkingLotId) {
+        Rating foundRating = ratingRepository.findByParkingLotId(parkingLotId)
+                .orElseThrow(() -> new ParkingLotNotFoundException(parkingLotId));
+        List<Grade> gradeList;
+        if (foundRating.getRatingNum() < 10) {
+            gradeList = gradeRepository.findByParkingLotId(foundRating.getParkingLotId());
+        }
+        else {
+            gradeList = gradeRepository.findTop10ByParkingLotIdOrderByTimestampDesc(foundRating.getParkingLotId());
+        }
 
-        found.forEach(rating -> {
-            List<Grade> top5 = gradeRepository.findTop5ByParkingLotIdOrderByTimestampDesc(rating.getParkingLotId());
-            StringBuilder builder = new StringBuilder();
-            top5.forEach(top -> { builder.append("'" + top.getComment() + "', " + top.getRating() + "점. "); });
+        StringBuilder builder = new StringBuilder();
+        gradeList.forEach(grade -> { builder.append("'" + grade.getComment() + "', " + grade.getRating() + "점. "); });
 
-            String content = "주차장이 있는데, 그 주차장의 최근 후기 5개는 다음과 같아. " +
-                    builder.toString() +
-                    "이 주차장에 대한 후기와 평점을 보고 평가를 한 줄로 요약해서 격식체로 답변해줘.";
-            try {
-                String summary = chatGPTService.sendChat(content);
-                rating.setCommentSummary(summary);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        String content = "주차장이 있는데, 그 주차장의 최근 후기는 다음과 같아. " +
+                builder.toString() +
+                "이 주차장에 대한 후기와 평점을 보고 평가를 한 줄로 요약해서 격식체로 답변해줘.";
+        try {
+            String summary = chatGPTService.sendChat(content);
+            foundRating.setCommentSummary(summary);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
