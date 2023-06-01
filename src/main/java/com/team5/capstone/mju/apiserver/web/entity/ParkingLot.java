@@ -48,12 +48,10 @@ public class ParkingLot {
     @Column(name = "owner_id")
     private Integer ownerId;
 
-    @Lob
-    @Column(name = "car_type", columnDefinition = "text")
+    @Column(name = "car_type")
     private String carType;
 
-    @Lob
-    @Column(name = "available_day", columnDefinition = "text")
+    @Column(name = "available_day")
     private String availableDay;
 
     public void updateAllInfoSelf(ParkingLotRequestOldDto requestDto) {

@@ -79,7 +79,7 @@ public class ParkingLotController {
     )
     @PostMapping("/parking-lots")
     public ResponseEntity<ParkingLotResponseDto> createParkingLot(@RequestBody ParkingLotDto requestDto) {
-        log.info(requestDto.toString());
+        log.info("POST /api/v1/parking-lots | DTO: " + requestDto.toString());
         ParkingLotResponseDto responseDto = parkingLotService.createParkingLot(requestDto);
         return ResponseEntity.ok(responseDto);
     }
