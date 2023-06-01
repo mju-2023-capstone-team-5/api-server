@@ -9,5 +9,5 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     List<Grade> findByParkingLotId(Integer parkingLotId);
     List<Grade> findByUserId(Integer userId);
 
-    List<Grade> findTop5ByParkingLotIdOrderByTimestampDesc(Integer parkingLotId);
+    List<Grade> findTop10ByParkingLotIdOrderByTimestampDesc(Integer parkingLotId);
 }

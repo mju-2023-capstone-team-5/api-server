@@ -69,6 +69,7 @@ public class GradeController {
         // 주차장 평점 업데이트
         ratingService.updateRating(requestDto.getParkingLotId(), requestDto.getRating());
 
+        gradeService.summaryReviewWithChatGPT(requestDto.getParkingLotId());
 
         return ResponseEntity.ok(responseDto);
     }
