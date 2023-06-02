@@ -20,3 +20,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0
