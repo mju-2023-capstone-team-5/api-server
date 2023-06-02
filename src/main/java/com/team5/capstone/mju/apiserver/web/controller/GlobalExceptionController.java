@@ -2,6 +2,7 @@ package com.team5.capstone.mju.apiserver.web.controller;
 
 import com.team5.capstone.mju.apiserver.web.exceptions.CustomException;
 import com.team5.capstone.mju.apiserver.web.exceptions.UserNotFoundException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
 
+@Profile("local")
 @ControllerAdvice
 public class GlobalExceptionController {
 
